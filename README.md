@@ -1,0 +1,15 @@
+# Insecure Bank
+![Insecure-Bank](https://hdivsecurity.com/img/bank.png)
+## Running the application locally
+
+1. Clone the repository:
+
+        $ git clone https://github.com/hdiv/insecure-bank.git
+2. Run the application using an embedded Tomcat:
+
+	    mvn tomcat7:run-war
+3. You can then access the bank application here: http://localhost:8080/hdiv-ee-bank/
+
+## Login credentials
+- username: john
+- password: test

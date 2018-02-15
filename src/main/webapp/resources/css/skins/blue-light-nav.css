@@ -1,0 +1,95 @@
+/*------------------------------------------------*/
+/*	Skin: Blue, Clean Nav
+/*------------------------------------------------*/
+/* top bar */
+.top-bar {
+  background-color: #1d92af;
+  border-bottom-color: #166d83;
+}
+.top-bar .action-group .btn-group > a {
+  color: #198099;
+}
+.top-bar .action-group .action-item > a {
+  color: #198099;
+}
+.top-bar .action-group .action-item > a:hover, .top-bar .action-group .action-item > a:active, .top-bar .action-group .action-item > a.active {
+  color: #fff;
+}
+.top-bar .logged-user .btn-group > a {
+  color: #fff;
+}
+.top-bar .logged-user .btn img {
+  border-color: #fff;
+}
+.top-bar .action-group .btn-group > a:hover,
+.top-bar .logged-user .btn-group > a:hover {
+  color: #fff;
+}
+.top-bar .action-group .btn-group.open > a,
+.top-bar .logged-user .btn-group.open > a {
+  color: #fff;
+}
+
+/* minified and off-canvas toggle button */
+.btn-nav-sidebar-minified i,
+.btn-off-canvas i {
+  color: #fff;
+}
+.btn-nav-sidebar-minified i:hover,
+.btn-off-canvas i:hover {
+  color: #fff;
+}
+
+/* custom nav pills */
+.nav-pills-custom-minimal > li.active a {
+  border-top-color: #1d92af;
+}
+.nav-pills-custom-minimal > li.active a:hover, .nav-pills-custom-minimal > li.active a:focus {
+  border-top-color: #1d92af;
+}
+.nav-pills-custom-minimal.custom-minimal-bottom > li.active a {
+  border-bottom-color: #1d92af;
+}
+.nav-pills-custom-minimal.custom-minimal-bottom > li.active a:hover, .nav-pills-custom-minimal.custom-minimal-bottom > li.active a:focus {
+  border-bottom-color: #1d92af;
+}
+
+/* main navigation */
+.main-nav,
+.left-content-bg {
+  background-color: #fff;
+  border-right: 1px solid #ccc;
+}
+
+.main-nav h3 {
+  border-bottom: 1px solid #ccc;
+}
+
+ul.main-menu li.active a {
+  background-color: #888;
+}
+ul.main-menu li.active a.submenu-toggle {
+  color: #8d8d8d;
+}
+ul.main-menu li a:hover, ul.main-menu li a:focus {
+  background-color: #888;
+}
+ul.main-menu .sub-menu li.active a {
+  background-color: #888;
+  color: #fff;
+}
+ul.main-menu .sub-menu li a {
+  background: #ebebeb;
+}
+ul.main-menu .sub-menu li a:hover, ul.main-menu .sub-menu li a:focus {
+  background-color: #b1b1b1;
+}
+
+.main-nav-minified .left-content ul li:hover > a {
+  background-color: #8d8d8d;
+  color: #fff;
+}
+
+.status-bar-list .progress {
+  background-color: #e9e9e9 !important;
+}
