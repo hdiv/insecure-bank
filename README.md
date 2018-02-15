@@ -8,7 +8,7 @@
 2. Run the application using an embedded Tomcat:
 
 	    mvn tomcat7:run-war
-3. You can then access the bank application here: http://localhost:8080/hdiv-ee-bank/
+3. You can then access the bank application here: http://localhost:8080/insecure-bank/
 
 ## Login credentials
 - username: john

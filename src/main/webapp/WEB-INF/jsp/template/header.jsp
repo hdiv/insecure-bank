@@ -7,7 +7,7 @@
 	<title>Insecure Bank</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta name="description" content="HDIV-EE-BANK showcase">
+	<meta name="description" content="Insecure Bank">
 	<meta name="author" content="The Develovers">
 
 	<!-- CSS -->
