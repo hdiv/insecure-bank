@@ -6,6 +6,8 @@ import javax.servlet.DispatcherType;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
+import org.hdiv.filter.ValidatorFilter;
+import org.hdiv.listener.InitListener;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
@@ -14,7 +16,7 @@ public class SpringWebInit extends AbstractAnnotationConfigDispatcherServletInit
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-		return new Class[] { CoreConfig.class, SecurityConfig.class };
+		return new Class[] { CoreConfig.class, SecurityConfig.class, HdivSecurityConfig.class};
 	}
 
 	@Override
@@ -31,6 +33,10 @@ public class SpringWebInit extends AbstractAnnotationConfigDispatcherServletInit
 	public void onStartup(final ServletContext container) throws ServletException {
 
 		super.onStartup(container);
+
+		container.addFilter("ValidatorFilter", ValidatorFilter.class).addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
+
+		container.addListener(new InitListener());
 
 		// Spring context listener
 		container.addListener(new RequestContextListener());

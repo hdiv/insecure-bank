@@ -11,6 +11,7 @@
 		<org.springframework-version>4.2.3.RELEASE</org.springframework-version>
 		<org.spring-security-version>4.0.3.RELEASE</org.spring-security-version>
 		<org.slf4j-version>1.7.13</org.slf4j-version>
+		<hdiv-ee-version>1.10.0</hdiv-ee-version>
 	</properties>
 
 	<build>
@@ -195,6 +196,17 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
 			<version>${org.spring-security-version}</version>
+		</dependency>
+		<!-- Hdiv -->
+		<dependency>
+			<groupId>org.hdiv.ee</groupId>
+			<artifactId>hdiv-ee-config</artifactId>
+			<version>${hdiv-ee-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hdiv.ee</groupId>
+			<artifactId>hdiv-ee-spring-mvc</artifactId>
+			<version>${hdiv-ee-version}</version>
 		</dependency>
 	</dependencies>
 </project>
