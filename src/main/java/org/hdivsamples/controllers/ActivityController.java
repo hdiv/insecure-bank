@@ -1,6 +1,7 @@
 package org.hdivsamples.controllers;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -12,6 +13,7 @@ import org.hdivsamples.dao.AccountDao;
 import org.hdivsamples.dao.ActivityDao;
 import org.hdivsamples.dao.CashAccountDao;
 import org.hdivsamples.dao.CreditAccountDao;
+import org.hdivsamples.util.InsecureBankUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,8 @@ public class ActivityController {
 	@RequestMapping
 	public String activity(final Model model, final Principal principal) {
 
+		long init = System.currentTimeMillis();
+
 		CashAccount cashAccount = new CashAccount();
 		Account account = accountDao.findUsersByUsername(principal.getName()).get(0);
 		List<CashAccount> cashAccounts = cashaccountDao.findCashAccountsByUsername(principal.getName());
@@ -60,11 +64,16 @@ public class ActivityController {
 		model.addAttribute("firstCashAccountTransfers", reverseFirstCashAccountTransfers);
 		model.addAttribute("actualCashAccountNumber", cashAccounts.get(0).getNumber());
 
+		Date end = new Date();
+		InsecureBankUtils.audit(end, principal.getName(), "activity list", end.getTime() - init);
+
 		return "accountActivity";
 	}
 
 	@RequestMapping("{account}/detail")
 	public String viewActivityByNumber(@PathVariable("account") final String number, final Model model, final Principal principal) {
+
+		long init = System.currentTimeMillis();
 
 		CashAccount cashAccount = new CashAccount();
 		Account account = accountDao.findUsersByUsername(principal.getName()).get(0);
@@ -79,11 +88,16 @@ public class ActivityController {
 		model.addAttribute("firstCashAccountTransfers", reverseFirstCashAccountTransfers);
 		model.addAttribute("actualCashAccountNumber", number);
 
+		Date end = new Date();
+		InsecureBankUtils.audit(end, principal.getName(), "account detail", end.getTime() - init);
+
 		return "accountActivity";
 	}
 
 	@RequestMapping("credit")
 	public String viewActivityByCreditNumber(@RequestParam("number") final String number, final Model model, final Principal principal) {
+
+		long init = System.currentTimeMillis();
 
 		logger.info("Showing info for credit card:" + number);
 
@@ -92,12 +106,17 @@ public class ActivityController {
 		model.addAttribute("account", account);
 		model.addAttribute("actualCreditCardNumber", number);
 
+		Date end = new Date();
+		InsecureBankUtils.audit(end, principal.getName(), "credit activity", end.getTime() - init);
+
 		return "creditActivity";
 	}
 
 	@RequestMapping(value = { "", "/activity", "/detail" }, method = RequestMethod.POST)
 	public String changeAccount(@Valid @ModelAttribute final CashAccount cashAccount, final BindingResult bindingResult, final Model model,
 			final Principal principal) {
+
+		long init = System.currentTimeMillis();
 
 		String postNumber = cashAccount.getNumber();
 
@@ -113,6 +132,9 @@ public class ActivityController {
 		model.addAttribute("cashAccount", cashAccountNewForm);
 		model.addAttribute("firstCashAccountTransfers", reverseFirstCashAccountTransfers);
 		model.addAttribute("actualCashAccountNumber", postNumber);
+
+		Date end = new Date();
+		InsecureBankUtils.audit(end, principal.getName(), "user activity", end.getTime() - init);
 
 		return "accountActivity";
 	}

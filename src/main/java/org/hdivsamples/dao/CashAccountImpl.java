@@ -19,7 +19,7 @@ public class CashAccountImpl implements CashAccountDao {
 	@Override
 	public List<CashAccount> findCashAccountsByUsername(final String username) {
 
-		String str = "select * from cashaccount  where username='" + username + "'";
+		String str = "select * from cashaccount  where username='" + username + "' order by number";
 
 		RowMapper<CashAccount> rowMapper = new RowMapper<CashAccount>() {
 			@Override

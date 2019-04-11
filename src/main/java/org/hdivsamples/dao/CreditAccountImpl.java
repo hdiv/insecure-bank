@@ -18,7 +18,7 @@ public class CreditAccountImpl implements CreditAccountDao {
 	@Override
 	public List<CreditAccount> findCreditAccountsByUsername(final String username) {
 
-		String str = "select * from creditaccount  where username='" + username + "'";
+		String str = "select * from creditaccount  where username='" + username + "' order by number";
 
 		RowMapper<CreditAccount> rowMapper = new RowMapper<CreditAccount>() {
 			@Override

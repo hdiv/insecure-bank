@@ -55,6 +55,13 @@ public class AccountDaoImpl implements AccountDao {
 	}
 
 	@Override
+	public String findAccountNameByUsername(final String username) {
+		String str = "select name from account where username='" + username + "' LIMIT 1";
+
+		return jdbcTemplate.queryForObject(str, String.class);
+	}
+
+	@Override
 	public List<Account> findAllUsers() {
 
 		String str = "select * from account";

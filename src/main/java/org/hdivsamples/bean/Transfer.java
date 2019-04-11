@@ -20,6 +20,8 @@ public class Transfer {
 
 	private Date date;
 
+	private int confirmationValue;
+
 	public int getId() {
 		return id;
 	}
@@ -82,6 +84,14 @@ public class Transfer {
 
 	public void setDate(final Date date) {
 		this.date = date;
+	}
+
+	public int getConfirmationValue() {
+		return confirmationValue;
+	}
+
+	public void setConfirmationValue(final int confirmationValue) {
+		this.confirmationValue = confirmationValue;
 	}
 
 }

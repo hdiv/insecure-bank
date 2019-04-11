@@ -1,10 +1,12 @@
 package org.hdivsamples.security;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hdivsamples.bean.Account;
 import org.hdivsamples.dao.AccountDao;
+import org.hdivsamples.util.InsecureBankUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,6 +29,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
 	@Override
 	public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
+
+		long init = System.currentTimeMillis();
 
 		// Editable validation for Spring security Login page.
 		// The login page is not generated using Spring MVC Form tags (it is not possible with Spring Security)
@@ -64,7 +68,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
 		User user = new User(listAccounts.get(0).getUsername(), listAccounts.get(0).getPassword(), authList);
 
-		return new UsernamePasswordAuthenticationToken(user, password, authList);
+		Authentication auth = new UsernamePasswordAuthenticationToken(user, password, authList);
+
+		Date end = new Date();
+		InsecureBankUtils.audit(end, user.getUsername(), "authentication", end.getTime() - init);
+
+		return auth;
 	}
 
 	@Override

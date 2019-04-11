@@ -8,12 +8,15 @@ public class FileUntrustedValid implements Serializable {
 
 	private String username;
 
+	private byte[] content;
+
 	public FileUntrustedValid() {
 
 	}
 
-	public FileUntrustedValid(final String username) {
+	public FileUntrustedValid(final String username, final byte[] content) {
 
 		this.username = username;
+		this.content = content;
 	}
 }

@@ -1,6 +1,8 @@
 package org.hdivsamples.controllers;
 
+import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
+import java.security.SecureRandom;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping(value = "/transfer")
@@ -66,13 +69,21 @@ public class TransferController {
 			final Principal principal, @CookieValue(value = "accountType", defaultValue = AccountType.PERSONAL) final String accountType,
 			final HttpSession session, final HttpServletResponse response) {
 
+		long init = System.currentTimeMillis();
+
+		String result;
 		if (bindingResult.hasErrors()) {
-			return newTransferForm(model, principal, response);
+			result = newTransferForm(model, principal, response);
 		}
 		else {
-			return AccountType.PERSONAL.equals(accountType) ? transferCheck(transfer, model, session, principal)
+			result = AccountType.PERSONAL.equals(accountType) ? transferCheck(transfer, model, session, principal)
 					: transferConfirmation(transfer, model, principal, accountType);
 		}
+
+		Date end = new Date();
+		InsecureBankUtils.audit(end, principal.getName(), "make transfer", end.getTime() - init);
+
+		return result;
 	}
 
 	private String transferCheck(final Transfer transfer, final Model model, final HttpSession session, final Principal principal) {
@@ -80,6 +91,12 @@ public class TransferController {
 		model.addAttribute("account", account);
 		model.addAttribute("transferbean", transfer);
 		model.addAttribute("operationConfirm", new OperationConfirm());
+		try {
+			model.addAttribute("confirmationValue", SecureRandom.getInstance("SHA1PRNG").nextInt(1000));
+		}
+		catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
 		session.setAttribute(PENDING_TRANSFER, transfer);
 
 		return "transferCheck";
@@ -122,17 +139,26 @@ public class TransferController {
 	@RequestMapping(value = "/confirm", method = RequestMethod.POST)
 	public String transferCheck(final OperationConfirm operationConfirm, final BindingResult bindingResult, final Model model,
 			final Principal principal, @CookieValue(value = "accountType", defaultValue = AccountType.PERSONAL) final String accountType,
-			final HttpSession session) {
+			final HttpSession session, @RequestParam(name = "confirmationValue", required = false) final Integer confirmationValue) {
+
+		long init = System.currentTimeMillis();
+
+		String result;
 
 		Transfer transfer = (Transfer) session.getAttribute(PENDING_TRANSFER);
 		session.removeAttribute(PENDING_TRANSFER);
 
 		if ("confirm".equals(operationConfirm.getAction()) && transfer != null) {
-			return transferConfirmation(transfer, model, principal, accountType);
+			result = transferConfirmation(transfer, model, principal, accountType);
 		}
 		else {
-			return "redirect:/transfer";
+			result = "redirect:/transfer";
 		}
+
+		Date end = new Date();
+		InsecureBankUtils.audit(end, principal.getName(), "make transfer check", end.getTime() - init);
+
+		return result;
 	}
 
 	static class AccountType {

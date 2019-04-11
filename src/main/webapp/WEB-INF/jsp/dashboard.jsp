@@ -100,6 +100,8 @@
 								<div class="widget">
 									<div class="widget-header clearfix">
 										<h3><i class="fa fa-list-alt"></i> <span>CASH ACCOUNTS</span></h3>
+										<spring:url value="/dashboard/cashAccount/export" var="cashAccountExport"/>
+										<i class="fa fa-file-excel-o fa-align-right" style="position: absolute;right: 25px;margin-top: 10px;" onclick='javascript:window.open("${cashAccountExport}");'></i>
 									</div>
 									<div class="widget-content">
 										<div class="table-responsive">
@@ -132,6 +134,8 @@
 								<div class="widget">
 									<div class="widget-header clearfix">
 										<h3><i class="fa fa-credit-card"></i> <span>CREDIT ACCOUNTS</span></h3>
+										<spring:url value="/dashboard/creditAccount/export" var="creditAccountExport"/>
+										<i class="fa fa-file-excel-o fa-align-right" style="position: absolute;right: 25px;margin-top: 10px;" onclick='javascript:window.open("${creditAccountExport}");'></i>
 									</div>
 									<div class="widget-content">
 										<div class="table-responsive">

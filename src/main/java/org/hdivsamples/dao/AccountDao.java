@@ -10,6 +10,8 @@ public interface AccountDao {
 
 	List<Account> findUsersByUsername(String username);
 
+	String findAccountNameByUsername(String username);
+
 	List<Account> findAllUsers();
 
 }

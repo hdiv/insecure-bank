@@ -10,10 +10,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.ss.usermodel.Workbook;
 import org.hdivsamples.bean.Account;
 import org.hdivsamples.bean.CashAccount;
 import org.hdivsamples.bean.CreditAccount;
@@ -23,6 +25,7 @@ import org.hdivsamples.dao.AccountDao;
 import org.hdivsamples.dao.CashAccountDao;
 import org.hdivsamples.dao.CreditAccountDao;
 import org.hdivsamples.facade.StorageFacade;
+import org.hdivsamples.util.InsecureBankUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,8 +52,12 @@ public class DashboardController {
 	@Autowired
 	StorageFacade storageFacade;
 
+	private static final String CERT_FILE_NAME = "certTemplate.crt";
+
 	@RequestMapping
 	public String activity(final Model model, final Principal principal) {
+
+		long init = System.currentTimeMillis();
 
 		Account account = accountDao.findUsersByUsername(principal.getName()).get(0);
 
@@ -60,11 +67,17 @@ public class DashboardController {
 		model.addAttribute("account", account);
 		model.addAttribute("cashAccounts", cashAccounts);
 		model.addAttribute("creditAccounts", creditAccounts);
+
+		Date end = new Date();
+		InsecureBankUtils.audit(end, principal.getName(), "view dashboard", end.getTime() - init);
+
 		return "dashboard";
 	}
 
 	@RequestMapping(value = "/userDetail", method = RequestMethod.GET)
 	public String userDetail(final Model model, final Principal principal, @RequestParam(value = "username") final String username) {
+
+		long init = System.currentTimeMillis();
 
 		Account account = accountDao.findUsersByUsername(username).get(0);
 		List<CreditAccount> creditAccounts = creditaccountDao.findCreditAccountsByUsername(principal.getName());
@@ -72,6 +85,9 @@ public class DashboardController {
 		model.addAttribute("creditAccounts", creditAccounts);
 		model.addAttribute("account", account);
 		model.addAttribute("accountMalicious", account);
+
+		Date end = new Date();
+		InsecureBankUtils.audit(end, principal.getName(), "user detail", end.getTime() - init);
 
 		return "userDetail";
 	}
@@ -89,11 +105,15 @@ public class DashboardController {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	@RequestMapping(value = "/userDetail/avatar/update", method = RequestMethod.POST)
 	public String updateAvatar(@RequestParam("imageFile") final MultipartFile imageFile, final Principal principal,
 			final RedirectAttributes redirectAttributes) {
+
+		long init = System.currentTimeMillis();
+
 		if (!imageFile.isEmpty()) {
 			try {
 				storageFacade.save(imageFile.getInputStream(), principal.getName() + ".png");
@@ -105,13 +125,18 @@ public class DashboardController {
 
 		redirectAttributes.addAttribute("username", principal.getName());
 
+		Date end = new Date();
+		InsecureBankUtils.audit(end, principal.getName(), "update avatar", end.getTime() - init);
+
 		return "redirect:/dashboard/userDetail";
 	}
 
 	@RequestMapping(value = "/userDetail/certificate", method = RequestMethod.POST)
-	public void getCertificate(final HttpServletResponse response, final Account account) {
+	public void getCertificate(final HttpServletResponse response, final Principal principal) {
 
-		Account bdAccount = accountDao.findUsersByUsername(account.getUsername()).get(0);
+		long init = System.currentTimeMillis();
+
+		String bdAccountName = accountDao.findAccountNameByUsername(principal.getName());
 		File tmpFile = null;
 
 		try {
@@ -119,12 +144,16 @@ public class DashboardController {
 			tmpFile = File.createTempFile("serial", ".ser");
 			FileOutputStream fos = new FileOutputStream(tmpFile);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(new FileUntrustedValid(account.getName()));
+
+			ClassLoader classLoader = getClass().getClassLoader();
+			File file = new File(classLoader.getResource(CERT_FILE_NAME).getFile());
+
+			oos.writeObject(new FileUntrustedValid(bdAccountName, readFileToByteArray(file)));
 			oos.close();
 			fos.close();
 
 			// Write into response
-			response.setHeader("Content-Disposition", "attachment; filename=\"Certificate_" + bdAccount.getName() + "_" + ".jks\"");
+			response.setHeader("Content-Disposition", "attachment; filename=\"Certificate_" + bdAccountName + "_" + ".jks\"");
 			int length = writeResponse(new FileInputStream(tmpFile), response.getOutputStream());
 			response.setContentType("application/octet-stream");
 			response.setHeader("Content-Length", length + "");
@@ -133,6 +162,26 @@ public class DashboardController {
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		Date end = new Date();
+		InsecureBankUtils.audit(end, principal.getName(), "download certificate", end.getTime() - init);
+	}
+
+	private static byte[] readFileToByteArray(final File file) {
+		FileInputStream fis = null;
+		// Creating a byte array using the length of the file
+		// file.length returns long which is cast to int
+		byte[] bArray = new byte[(int) file.length()];
+		try {
+			fis = new FileInputStream(file);
+			fis.read(bArray);
+			fis.close();
+
+		}
+		catch (IOException ioExp) {
+			ioExp.printStackTrace();
+		}
+		return bArray;
 	}
 
 	@RequestMapping(value = "/userDetail/newcertificate", method = RequestMethod.POST)
@@ -202,5 +251,101 @@ public class DashboardController {
 		}
 
 		return total;
+	}
+
+	@RequestMapping(value = "/cashAccount/export", method = RequestMethod.GET)
+	public void exportCashAccount(final HttpServletResponse response, final Principal principal) {
+
+		long init = System.currentTimeMillis();
+
+		List<CashAccount> cashAccounts = cashaccountDao.findCashAccountsByUsername(principal.getName());
+
+		String[][] data = new String[3][cashAccounts.size()];
+		int i = 0;
+		for (CashAccount cashAccount : cashAccounts) {
+			String[] row = new String[] { cashAccount.getNumber(), cashAccount.getDescription(),
+					String.valueOf(cashAccount.getAvailableBalance()) };
+			data[i] = row;
+			i++;
+		}
+
+		Workbook workbook = InsecureBankUtils.export("Cash Account", new String[] { "Cash Account", "Description", "Available Balance" },
+				data);
+
+		response.setHeader("Content-disposition", "attachment;filename=CashAccount.xls");
+		response.setHeader("charset", "iso-8859-1");
+		response.setContentType("application/octet-stream");
+
+		try {
+			workbook.write(response.getOutputStream());
+		}
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+
+			try {
+				workbook.close();
+				response.getOutputStream().flush();
+				response.getOutputStream().close();
+				response.flushBuffer();
+			}
+			catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		Date end = new Date();
+		InsecureBankUtils.audit(end, principal.getName(), "make transfer", end.getTime() - init);
+	}
+
+	@RequestMapping(value = "/creditAccount/export", method = RequestMethod.GET)
+	public void exportCreditAccount(final HttpServletResponse response, final Principal principal) {
+
+		long init = System.currentTimeMillis();
+
+		List<CreditAccount> creditAccounts = creditaccountDao.findCreditAccountsByUsername(principal.getName());
+
+		String[][] data = new String[3][creditAccounts.size()];
+		int i = 0;
+		for (CreditAccount creditAccount : creditAccounts) {
+			String[] row = new String[] { creditAccount.getNumber(), creditAccount.getDescription(),
+					String.valueOf(creditAccount.getAvailableBalance()) };
+			data[i] = row;
+			i++;
+		}
+
+		Workbook workbook = InsecureBankUtils.export("Credit Account",
+				new String[] { "Credit Account", "Description", "Available Balance" }, data);
+
+		response.setHeader("Content-disposition", "attachment;filename=CreditAccount.xls");
+		response.setHeader("charset", "iso-8859-1");
+		response.setContentType("application/octet-stream");
+
+		try {
+			workbook.write(response.getOutputStream());
+		}
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+
+			try {
+				workbook.close();
+				response.getOutputStream().flush();
+				response.getOutputStream().close();
+				response.flushBuffer();
+			}
+			catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		Date end = new Date();
+		InsecureBankUtils.audit(end, principal.getName(), "make transfer", end.getTime() - init);
 	}
 }

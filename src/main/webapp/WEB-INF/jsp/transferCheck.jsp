@@ -122,7 +122,7 @@
 								<div class="widget">
 									<div class="widget-header clearfix">
 										<h3>
-											<i class="fa fa-list-alt"></i> <span>Find the number 243 and enter the corresponding code:</span>
+											<i class="fa fa-list-alt"></i> <span>Find the number <c:out value="${confirmationValue}"/>  and enter the corresponding code:</span>
 										</h3>
 									</div>
 									<div class="widget-content">										
@@ -139,6 +139,7 @@
 												</div>
 											</div>
 											</spring:bind>
+											<input type="hidden" name="confirmationValue" value='<c:out value="${confirmationValue}"/>'/>
 										 </form:form>																											
 										</div>		
 									</div>
