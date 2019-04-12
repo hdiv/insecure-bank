@@ -41,9 +41,9 @@
 											<dt><spring:message code="username"/>:</dt>
 											<dd>${account.username}</dd>
 											<dt><spring:message code="name"/>:</dt>
-											<dd>${account.name}</dd>
+											<dd><c:out value="${account.name}"/></dd>
 											<dt><spring:message code="surname"/>:</dt>
-											<dd>${account.surname}</dd>																				
+											<dd><c:out value="${account.surname}"/></dd>																				
 											<dt><spring:message code="accountType"/>:</dt>
 											<dd>Personal</dd>
 											<dt><spring:message code="accountStatus"/>:</dt>
