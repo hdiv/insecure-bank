@@ -6,6 +6,7 @@ import javax.servlet.DispatcherType;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
+import org.hdivsamples.filters.RequestFilter;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
@@ -35,8 +36,11 @@ public class SpringWebInit extends AbstractAnnotationConfigDispatcherServletInit
 		// Spring context listener
 		container.addListener(new RequestContextListener());
 
+		container.addFilter("requestFilter", RequestFilter.class).addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
+
 		// Spring Security Filter
 		container.addFilter("springSecurityFilterChain", DelegatingFilterProxy.class)
 				.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
+
 	}
 }
