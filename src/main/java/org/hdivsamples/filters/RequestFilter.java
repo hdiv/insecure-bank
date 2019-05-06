@@ -35,18 +35,28 @@ public class RequestFilter implements Filter {
 			String username = principal.getName();
 			String userAddr = userAddrMap.get(username);
 			if (userAddr != null) {
+
 				if (!userAddr.equals(request.getRemoteAddr())) {
 					// User Ip has changed. Invalidate user and redirect to login
 					SecurityContextHolder.getContext().setAuthentication(null);
 				}
 			}
 			else {
-				userAddrMap.put(username, request.getRemoteAddr());
+				userAddrMap.put(username, getUserIP(httpRequest));
 			}
 
 		}
 		chain.doFilter(request, response);
 
+	}
+
+	private String getUserIP(final HttpServletRequest request) {
+		if (request.getHeader("X-Forwarded-For") == null) {
+			return request.getRemoteAddr();
+		}
+		else {
+			return request.getHeader("X-Forwarded-For");
+		}
 	}
 
 	@Override
