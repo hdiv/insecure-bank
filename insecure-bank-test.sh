@@ -1,3 +1,3 @@
 #!/bin/sh
 
-mvn clean install -Pperformance-test
+mvn verify -Pperformance-test

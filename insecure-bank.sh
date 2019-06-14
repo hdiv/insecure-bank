@@ -1,3 +1,3 @@
 #!/bin/sh
 
-mvn clean install -Pdevelop
+mvn clean package cargo:run -Pdevelop
