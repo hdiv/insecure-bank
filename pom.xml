@@ -157,7 +157,7 @@
 							<generateReports>false</generateReports>
 							<testResultsTimestamp>false</testResultsTimestamp>
 							<testFilesIncluded>
-								<jMeterTestFile>insecure-bank.jmx</jMeterTestFile>
+								<jMeterTestFile>agent_test.jmx</jMeterTestFile>
 							</testFilesIncluded>
 							<jmeterVersion>${jmeter.version}</jmeterVersion>
 						</configuration>
