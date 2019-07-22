@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<udm.DeploymentPackage version="1.0.$BUILD_NUMBER" application="Insecure Bank">
+ <application />
+ <deployables>
+  <jee.War name="/insecure-bank" file="insecure-bank.war"/>
+ <dependencyResolution>LATEST</dependencyResolution>
+ <undeployDependencies>false</undeployDependencies>
+</udm.DeploymentPackage>
