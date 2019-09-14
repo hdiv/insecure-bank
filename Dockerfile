@@ -18,7 +18,7 @@ RUN mkdir -p insecure-bank
 
 ADD . / insecure-bank/
 
-RUN cd insecure-bank && mvn clean package && cp target/insecure-bank.war /opt/tomcat/webapps/
+RUN cd insecure-bank && ls && mvn clean package && cp target/insecure-bank.war /opt/tomcat/webapps/
 
 # RUN echo $CATALINA_HOME
 
