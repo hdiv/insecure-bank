@@ -54,12 +54,11 @@ pipeline {
                                     --detect.docker.passthrough.shared.dir.path.local="/opt/blackduck/shared/" \
                                     --detect.docker.passthrough.shared.dir.path.imageinspector="/opt/blackduck/shared" \
                                     --detect.docker.passthrough.imageinspector.service.start=false'
-                            sh 'find . -type f -iname "*.pdf" -exec tar -cf synopsys_scan_results.tar "{}" +'
                         }
                     }
                     post {
                         always {
-                            archiveArtifacts artifacts: '**/*.tar', fingerprint: true, onlyIfSuccessful: true
+                            stash includes: '**/*.pdf', name: 'detectReport'
                         }
                     }
                 }
@@ -78,7 +77,7 @@ pipeline {
                     }
                     post {
                         always {
-                            archiveArtifacts artifacts: '**/*.tar', fingerprint: true, onlyIfSuccessful: true
+                            stash includes: '**/*.pdf', name: 'bdbaReport'
                         }
                     }
                 }
@@ -89,6 +88,10 @@ pipeline {
         agent { label 'docker-app' }
         steps {
           container('docker-with-detect') {
+            unstash 'detectReport'
+            unstash 'bdbaReport'
+            sh 'find . -type f -iname "*.pdf" -exec tar -cf synopsys_scan_results.tar "{}" +'
+            archiveArtifacts artifacts: '**/*.tar', fingerprint: true, onlyIfSuccessful: true
             sh 'cat my_password.txt | docker login --username gautambaghel --password-stdin'
             sh 'docker tag cloudbees_detect_app:latest gautambaghel/cloudbees_detect_app:latest'
             sh 'docker push gautambaghel/cloudbees_detect_app:latest'
