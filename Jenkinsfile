@@ -54,7 +54,7 @@ pipeline {
                                     --detect.docker.passthrough.shared.dir.path.local="/opt/blackduck/shared/" \
                                     --detect.docker.passthrough.shared.dir.path.imageinspector="/opt/blackduck/shared" \
                                     --detect.docker.passthrough.imageinspector.service.start=false'
-                            sh 'find  . -type f -iname "*.pdf" -exec tar -rvf synopsys_scan_results.tar "{}" +'
+                            sh 'find . -type f -iname "*.pdf" -exec tar -cf synopsys_scan_results.tar "{}" +'
                         }
                     }
                     post {
@@ -73,7 +73,7 @@ pipeline {
                                 --protecode-username="gautamb@synopsys.com" \
                                 --protecode-password="${PROTECODE_SC_PASSWORD}" \
                                 --protecode-group="Duck Binaries"'
-                            sh 'find  . -type f -iname "*.pdf" -exec tar -rvf synopsys_scan_results.tar "{}" +'
+                            sh 'find . -type f -iname "*.pdf" -exec tar -cf synopsys_scan_results.tar "{}" +'
                         }
                     }
                     post {
