@@ -1,0 +1,37 @@
+security:
+  pipeline:
+    type: "Inline"
+    toolchain: "OpenSource"
+  sastScan:
+    enabled: false
+    rescanThreshold: 10
+  scaScan:
+    enabled: false
+    rescanThreshold: 10
+  dastScan:
+    enabled: false
+    rescanThreshold: 10
+  sastPlusM: true
+  dastPlusM: false
+
+buildBreaker:
+  coverity: 
+    statusQuery: "new"
+    overallSeverityQuery: "high"
+    categoryQuery: "cross-site scripting"
+    categorySeverityQuery: "medium"
+  blackduck:
+    statusQuery: "new"
+    overallSeverityQuery: "medium"
+    cveQuery: ""
+    componentQuery: ""
+  seeker:
+    statusQuery: "new"
+    overallSeverityQuery: "critical"
+    categoryQuery: "SQL Injection"
+    categorySeverityQuery: "high"
+
+sct:
+  enableJira: "false"
+  jiraIssueType: "Bug"
+  enableBuildBreaker: "false"

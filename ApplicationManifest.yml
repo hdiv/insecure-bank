@@ -1,0 +1,28 @@
+application:
+  appId: GAZER-123
+  assetId: GAZER-123
+  sdlcType: EDM
+  appType: Webapp
+  webservice: false
+  restApi: false
+  microservice: false
+  projectLanguage: Java
+  frameworks: 
+   - Spring security
+   - Hibernate
+  platformVersion: Java 8
+  buildSystem: Maven
+  riskMatrixRevision: Rev1.0
+  sourceFilePattern: ".*\\+\\+\\+.*(\\.java|\\.jsp)+.*"
+  sensitivePackagePattern: ".*(\\+\\+\\+.*(org\\/hdivsamples\\/security)).*"
+  fileChangeThreshold: 20
+
+environment:
+  scm: External
+  scmOwner: almehta
+  scmRepositoryName: InsecureBank
+  scmBranchName: develop
+  testDeploymentRoot: "insecure-bank"
+  imChannelIdentifier: "#stargazer-notifications"
+  jiraProjectName: "DEM"
+  jiraIssuesQuery: "resolution = \"Unresolved\" AND labels in (Security, Defect)"
