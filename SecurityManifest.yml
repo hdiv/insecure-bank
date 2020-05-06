@@ -1,7 +1,8 @@
+---
 security:
   pipeline:
     type: "Inline"
-    toolchain: "OpenSource"
+    toolchain: "Synopsys"
   sastScan:
     enabled: false
     rescanThreshold: 10
@@ -13,7 +14,7 @@ security:
     rescanThreshold: 10
   sastPlusM: true
   dastPlusM: false
-
+---
 buildBreaker:
   coverity: 
     statusQuery: "new"
@@ -30,8 +31,8 @@ buildBreaker:
     overallSeverityQuery: "critical"
     categoryQuery: "SQL Injection"
     categorySeverityQuery: "high"
-
+---
 sct:
-  enableJira: "false"
+  enableJira: "true"
   jiraIssueType: "Bug"
-  enableBuildBreaker: "false"
+  enableBuildBreaker: "true"
