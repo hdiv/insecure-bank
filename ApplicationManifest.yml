@@ -20,7 +20,7 @@ application:
 environment:
   scm: External
   scmOwner: almehta
-  scmRepositoryName: InsecureBank
+  scmRepositoryName: "insecure-bank"
   scmBranchName: develop
   testDeploymentRoot: "insecure-bank"
   imChannelIdentifier: "#stargazer-notifications"
