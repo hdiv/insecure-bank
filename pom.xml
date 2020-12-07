@@ -212,4 +212,27 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>hdiv-agent-tests</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.9</version>
+						<configuration>
+							<argLine>
+								-javaagent:/path-to-hdiv/agent/java/hdiv-ee-agent.jar
+								-Dhdiv.config.dir=/path-to-hdiv/license/
+								-Dhdiv.testing.mode=true
+								-Dhdiv.mandatory.app.name=insecure-bank
+							</argLine>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
