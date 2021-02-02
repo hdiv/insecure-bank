@@ -13,7 +13,7 @@ create table account (
 );
 
 create table cashaccount (
-    id int,
+    id int not null,
     number varchar(80) not null,
     username varchar(80)  not null,
     availablebalance double precision,
@@ -22,7 +22,7 @@ create table cashaccount (
 );
 
 create table creditaccount(
-    id int,
+    id int not null,
     number varchar(80) not null,
     username varchar(80)  not null,
     description varchar(80)  not null,
@@ -33,7 +33,7 @@ create table creditaccount(
 
 
 create table transfer(
-    id serial,
+    id int generated always as identity not null,
     fromAccount varchar(80) not null,
     toAccount varchar(80)  not null,
     description varchar(80)  not null,
@@ -45,7 +45,7 @@ create table transfer(
 );
 
 create table transaction(
-    id serial,
+    id int generated always as identity not null,
     date TIMESTAMP,
     description varchar(80)  not null,
     number varchar(80) not null,
