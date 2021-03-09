@@ -30,7 +30,8 @@ jobs:
         export POLARIS_SERVER_URL=${{secrets.POLARIS_SERVER_URL}}
         export POLARIS_ACCESS_TOKEN=${{secrets.POLARIS_ACCESS_TOKEN}}
         wget -q http://sipse.polaris.synopsys.com/api/tools/polaris_cli-linux64.zip
-        unzip -j -o polaris_cli-linux64.zip -d /tmp
+        whoami
+        sudo unzip -j -o polaris_cli-linux64.zip -d /tmp
         /tmp/polaris analyze --coverity-ignore-capture-failure -w    
 
     - name: Software Composition Analysis with Black Duck
