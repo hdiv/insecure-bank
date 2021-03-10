@@ -7,6 +7,10 @@ on:
 jobs:
   build:
     runs-on: self-hosted
+    env:
+      COV_BIN: /home/chakrava/cov-analysis-linux64-2020.06/bin
+      BLDCMD: mvn -B -DskipTests clean package --file pom.xml
+      CHECKERS: --all --webapp-security 
     steps:
     - uses: actions/checkout@v2
     - name: IO Scan
@@ -19,15 +23,18 @@ jobs:
         workflowServerUrl: ${{secrets.WORKFLOW_SERVER_URL}}
         prescriptionDownloadURL: ${{secrets.PRESCRIPTION_DOWNLOAD_URL}}
         additionalWorkflowArgs: "--polaris.url=${{secrets.POLARIS_SERVER_URL}} --github.token=${{secrets.GH_ATOKEN}} --polaris.project.name=sig-chakrava/insecure-bank --polaris.token=${{secrets.POLARIS_ACCESS_TOKEN}} --jira.auth.token=${{secrets.JIRA_TOKEN}} --sensitive.package.pattern='.*(.xml)' --jira.project.name=DEV --jira.api.url=https://dev-io.atlassian.net/rest/api/latest --jira.username=chakra.mithun@gmail.com --jira.issues.query=project=DEV --blackduck.project.name=insecure-bank:1.0.0 --blackduck.url=https://io-blackduck.dev.polaris.synopsys.com --blackduck.api.token=${{secrets.BLACKDUCK_TOKEN}} --io.manifest.url=https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/coverity/2021.01/io-manifest.yml"
+    
     - name: Static Analysis with Coverity
       if: ${{steps.prescription.outputs.sastScan == 'true' }}
       continue-on-error: true
       run: |
-         cov-configure --java
+         export "PATH=$COV_BIN:$PATH"
+         $COV_BIN/cov-configure --java
          rm -rf temp
-         cov-build --dir temp $BLDCMD
-         cov-analyze --dir temp --ticker-mode none --strip-path $PWD $CHECKERS
-         cov-format-errors --dir temp --json-output-v7 coverity-results.json
+         $COV_BIN/cov-build --dir temp $BLDCMD
+         $COV_BIN/cov-analyze --dir temp --ticker-mode none --strip-path $PWD $CHECKERS
+         $COV_BIN/cov-format-errors --dir temp --json-output-v7 coverity-results.json
+         
     - name: Software Composition Analysis with Black Duck
       if: ${{steps.prescription.outputs.scaScan == 'true' }}
       uses: blackducksoftware/github-action@v2
