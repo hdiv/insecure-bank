@@ -1,18 +1,14 @@
 name: Go
-
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
 jobs:
-
   build:
     runs-on: self-hosted
     steps:
     - uses: actions/checkout@v2
-    
     - name: IO Scan
       id: prescription
       uses: synopsys-sig/intelligent-security-scan@48eedfcd42bc342a294dc495ac452797b2d9ff08
@@ -22,25 +18,21 @@ jobs:
         ioServerToken: ${{secrets.IO_SERVER_TOKEN}}        
         workflowServerUrl: ${{secrets.WORKFLOW_SERVER_URL}}
         prescriptionDownloadURL: ${{secrets.PRESCRIPTION_DOWNLOAD_URL}}
-        additionalWorkflowArgs: "--polaris.url=${{secrets.POLARIS_SERVER_URL}} --github.token=${{secrets.GH_ATOKEN}} --polaris.project.name=sig-chakrava/insecure-bank --polaris.token=${{secrets.POLARIS_ACCESS_TOKEN}} --jira.auth.token=${{secrets.JIRA_TOKEN}} --sensitive.package.pattern='.*(.xml)' --jira.project.name=DEV --jira.api.url=https://dev-io.atlassian.net/rest/api/latest --jira.username=chakra.mithun@gmail.com --jira.issues.query=project=DEV --blackduck.project.name=insecure-bank --blackduck.url=https://io-blackduck.dev.polaris.synopsys.com --blackduck.api.token=${{secrets.BLACKDUCK_TOKEN}}"
-
-    - name: Static Analysis with Polaris
-      if: ${{steps.prescription.outputs.sastScan == 'true'}}
+        additionalWorkflowArgs: "--polaris.url=${{secrets.POLARIS_SERVER_URL}} --github.token=${{secrets.GH_ATOKEN}} --polaris.project.name=sig-chakrava/insecure-bank --polaris.token=${{secrets.POLARIS_ACCESS_TOKEN}} --jira.auth.token=${{secrets.JIRA_TOKEN}} --sensitive.package.pattern='.*(.xml)' --jira.project.name=DEV --jira.api.url=https://dev-io.atlassian.net/rest/api/latest --jira.username=chakra.mithun@gmail.com --jira.issues.query=project=DEV --blackduck.project.name=insecure-bank:1.0.0 --blackduck.url=https://io-blackduck.dev.polaris.synopsys.com --blackduck.api.token=${{secrets.BLACKDUCK_TOKEN}} --io.manifest.url=https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/coverity/2021.01/io-manifest.yml"
+    - name: Static Analysis with Coverity
+      if: ${{steps.prescription.outputs.sastScan == 'true' }}
+      continue-on-error: true
       run: |
-        export POLARIS_SERVER_URL=${{secrets.POLARIS_SERVER_URL}}
-        export POLARIS_ACCESS_TOKEN=${{secrets.POLARIS_ACCESS_TOKEN}}
-        wget -q http://sipse.polaris.synopsys.com/api/tools/polaris_cli-linux64.zip
-        whoami
-        sudo unzip -j -o polaris_cli-linux64.zip -d /tmp
-        /tmp/polaris analyze --coverity-ignore-capture-failure -w    
-
+         cov-configure --java
+         rm -rf temp
+         cov-build --dir temp $BLDCMD
+         cov-analyze --dir temp --ticker-mode none --strip-path $PWD $CHECKERS
+         cov-format-errors --dir temp --json-output-v7 coverity-results.json
     - name: Software Composition Analysis with Black Duck
       if: ${{steps.prescription.outputs.scaScan == 'true' }}
       uses: blackducksoftware/github-action@v2
       with:
          args: '--blackduck.url="${{ secrets.BLACKDUCK_URL}}" --blackduck.api.token="${{ secrets.BLACKDUCK_TOKEN}}" --detect.tools="DETECTOR" --blackduck.trust.cert=true'
-         
-
     - name: Synopsys Intelligent Security Scan
       if: ${{steps.prescription.outputs.sastScan == 'true' || steps.prescription.outputs.scaScan == 'true'}}
       uses: synopsys-sig/intelligent-security-scan@48eedfcd42bc342a294dc495ac452797b2d9ff08
@@ -49,9 +41,8 @@ jobs:
         ioServerToken: ${{secrets.IO_SERVER_TOKEN}}
         workflowServerUrl: ${{secrets.WORKFLOW_SERVER_URL}}
         prescriptionDownloadURL: ${{secrets.PRESCRIPTION_DOWNLOAD_URL}}
-        additionalWorkflowArgs: "--polaris.url=${{secrets.POLARIS_SERVER_URL}} --IS_SAST_ENABLED=${{steps.prescription.outputs.sastScan}} --IS_SCA_ENABLED=false --github.token=${{secrets.GH_ATOKEN}} --polaris.project.name=sig-chakrava/insecure-bank --polaris.token=${{secrets.POLARIS_ACCESS_TOKEN}} --jira.auth.token=${{secrets.JIRA_TOKEN}} --sensitive.package.pattern='.*(.xml)' --jira.project.name=DEV --jira.api.url=https://dev-io.atlassian.net/rest/api/latest --jira.username=chakra.mithun@gmail.com --jira.issues.query=project=DEV --blackduck.project.name=insecure-bank --blackduck.url=https://io-blackduck.dev.polaris.synopsys.com --blackduck.api.token=${{secrets.BLACKDUCK_TOKEN}}"
+        additionalWorkflowArgs: "--polaris.url=${{secrets.POLARIS_SERVER_URL}} --IS_SAST_ENABLED=${{steps.prescription.outputs.sastScan}} --IS_SCA_ENABLED=${{steps.prescription.outputs.scaScan}} --github.token=${{secrets.GH_ATOKEN}} --polaris.project.name=sig-chakrava/insecure-bank --polaris.token=${{secrets.POLARIS_ACCESS_TOKEN}} --jira.auth.token=${{secrets.JIRA_TOKEN}} --sensitive.package.pattern='.*(.xml)' --jira.project.name=DEV --jira.api.url=https://dev-io.atlassian.net/rest/api/latest --jira.username=chakra.mithun@gmail.com --jira.issues.query=project=DEV --blackduck.project.name=insecure-bank:1.0.0 --blackduck.url=https://io-blackduck.dev.polaris.synopsys.com --blackduck.api.token=${{secrets.BLACKDUCK_TOKEN}} --io.manifest.url=https://sigdevsecops.blob.core.windows.net/intelligence-orchestration/coverity/2021.01/io-manifest.yml"
         stage: "WORKFLOW"
-
     - name: Upload SARIF file
       if: ${{steps.prescription.outputs.sastScan == 'true' }}
       uses: github/codeql-action/upload-sarif@v1
