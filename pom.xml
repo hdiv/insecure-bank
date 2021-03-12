@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.hdiv</groupId>
@@ -11,7 +12,7 @@
 		<org.springframework-version>4.2.3.RELEASE</org.springframework-version>
 		<org.spring-security-version>4.0.3.RELEASE</org.spring-security-version>
 		<org.slf4j-version>1.7.13</org.slf4j-version>
-		<hdiv-ee-version>1.10.0</hdiv-ee-version>
+		<hdiv-ee-version>2.6.3</hdiv-ee-version>
 	</properties>
 
 	<build>
@@ -208,5 +209,42 @@
 			<artifactId>hdiv-ee-spring-mvc</artifactId>
 			<version>${hdiv-ee-version}</version>
 		</dependency>
+
+		<!-- Testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${org.springframework-version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>hdiv-agent-tests</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.9</version>
+						<configuration>
+							<argLine>
+								-javaagent:/path-to-hdiv/agent/java/hdiv-ee-agent.jar
+								-Dhdiv.config.dir=/path-to-hdiv/license/
+								-Dhdiv.testing.mode=true
+								-Dhdiv.mandatory.app.name=insecure-bank
+							</argLine>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

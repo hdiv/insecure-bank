@@ -116,7 +116,6 @@
 													<c:forEach items="${cashAccounts}" var="cash">
 														<tr>
 															<spring:url value="/activity/${cash.number}/detail" var="url">
-															  <!-- spring:param name="account" value="${cash.number}" /-->
 															</spring:url>
 															<td><c:out value="${cash.number}"/></td>
 															<td><c:out value="${cash.description}"/></td>																		
