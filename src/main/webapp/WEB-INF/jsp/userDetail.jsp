@@ -159,15 +159,22 @@
 														<c:forEach items="${creditAccounts}" var="credit">
 															<tr>
 																<td>
-																<c:if test="${fn:contains(credit.description, 'Visa')}">
-																   <i class="fa fa-cc-visa"></i>
-																</c:if>
-																<c:if test="${fn:contains(credit.description, 'AmEx')}">
-																   <i class="fa fa-cc-amex"></i>
-																</c:if>
-																<c:if test="${fn:contains(credit.description, 'Master')}">
-																	<i class="fa fa-cc-mastercard"></i>
-																</c:if>																														
+                                                                  <c:if test="${fn:contains(credit.description, 'Visa')}">
+                                                                    <spring:url value="/dashboard/userDetail/creditCardImage" var="cardIcon" htmlEscape="true" >
+                                                                   		<spring:param name="url" value="classpath:creditCards/visa.png"></spring:param>
+                                                             		</spring:url>
+                                                             	  </c:if>
+                                                             	  <c:if test="${fn:contains(credit.description, 'AmEx')}">
+                                                             	    <spring:url value="/dashboard/userDetail/creditCardImage" var="cardIcon" htmlEscape="true" >
+                                                                      <spring:param name="url" value="classpath:creditCards/amex.png"></spring:param>
+                                                                    </spring:url>
+                                                             	  </c:if>
+                                                             	  <c:if test="${fn:contains(credit.description, 'Master')}">
+                                                                    <spring:url value="/dashboard/userDetail/creditCardImage" var="cardIcon" htmlEscape="true" >
+                                                                      <spring:param name="url" value="classpath:creditCards/mastercard.png"></spring:param>
+                                                                    </spring:url>
+                                                                  </c:if>
+										                           <img id="card-ico" src="${cardIcon}" class="img-thumbnail" alt="card" style="border:solid 1px grey;cursor:pointer;" />
 																<c:out value="${credit.number}"/></td>
 																<td><c:out value="${credit.description}"/></td>																		
 															</tr>
