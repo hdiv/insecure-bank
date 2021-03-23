@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.security.Principal;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import org.hdivsamples.dao.AccountDao;
 import org.hdivsamples.dao.CashAccountDao;
 import org.hdivsamples.dao.CreditAccountDao;
 import org.hdivsamples.facade.StorageFacade;
+import org.hdivsamples.util.InsecureBankUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -90,6 +92,16 @@ public class DashboardController {
 			e.printStackTrace();
 		}
 	}
+
+	@RequestMapping(value = "/userDetail/creditCardImage", method = RequestMethod.GET)
+	public void getCreditCardImage(@RequestParam(value = "url") final String image, HttpServletResponse response) throws IOException {
+		String downLoadImgFileName = InsecureBankUtils.getNameWithoutExtension(image) + "." + InsecureBankUtils.getFileExtension(image);
+		// download
+		response.setHeader( "content-disposition", "attachment;fileName=" + downLoadImgFileName);
+		URL u = new URL(image);
+		writeResponse(u.openStream(),response.getOutputStream());
+	}
+	
 
 	@RequestMapping(value = "/userDetail/avatar/update", method = RequestMethod.POST)
 	public String updateAvatar(@RequestParam("imageFile") final MultipartFile imageFile, final Principal principal,
