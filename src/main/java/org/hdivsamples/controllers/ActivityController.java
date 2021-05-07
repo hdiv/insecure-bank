@@ -1,8 +1,13 @@
 package org.hdivsamples.controllers;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.hdivsamples.bean.Account;
@@ -115,6 +120,33 @@ public class ActivityController {
 		model.addAttribute("actualCashAccountNumber", postNumber);
 
 		return "accountActivity";
+	}
+
+	@RequestMapping(value = { "/download" }, method = RequestMethod.GET)
+	public void downloadAccount(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+		response.setContentType("application/vnd.ander-excel");
+		response.setHeader("Content-Disposition", "attachment; filename=Hoteles.xlsx");
+
+		String path = request.getSession().getServletContext().getRealPath("/WEB-INF/plantillas/");
+
+		File file = new File(path.concat("/").concat("Hoteles.xlsx"));
+
+		FileInputStream fis = null;
+		try {
+			int c;
+			fis = new FileInputStream(file);
+
+			while ((c = fis.read()) != -1) {
+				response.getWriter().write(c);
+			}
+
+		}
+		finally {
+			if (fis != null) {
+				fis.close();
+			}
+			response.getWriter().close();
+		}
 	}
 
 }
