@@ -15,10 +15,12 @@ pool:
 
 steps:
 - task: CmdLine@2
+  displayName: 'Coverity Capture'
   inputs:
     script: 'coverity capture'
 
 - task: CmdLine@2
+  displayName: 'Coverity Analysis'
   inputs:
     script: 'coverity analyze'
 
