@@ -16,4 +16,4 @@ pool:
 steps:
 - task: CmdLine@2
   inputs:
-    script: 'mvn clean compile -DskipTests'
+    script: 'cov-build --dir idir mvn clean compile -DskipTests'
