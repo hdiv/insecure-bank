@@ -16,4 +16,7 @@ pool:
 steps:
 - task: CmdLine@2
   inputs:
-    script: 'cov-build --dir idir mvn clean compile -DskipTests'
+    script: 'coverity capture'
+- task: CmdLine@2
+  inputs:
+    script: 'coverity analyze'
