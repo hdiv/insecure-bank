@@ -14,9 +14,12 @@ pool:
    - agent.name -equals nuc
 
 steps:
-- task: CmdLine@2
+- task: Coverity-Capture
   inputs:
     script: 'coverity capture'
-- task: CmdLine@2
+
+- task: Coverity-Analyze
   inputs:
     script: 'coverity analyze'
+
+
