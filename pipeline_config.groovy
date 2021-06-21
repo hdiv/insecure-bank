@@ -1,0 +1,4 @@
+libraries {
+	github
+	whitesource
+}
