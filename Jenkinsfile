@@ -1,6 +1,6 @@
 node{
   on_commit to: develop, {
-    maven.run(["clean", "install"])
+    maven.run(["clean", "compile"])
     ws_scan()
   }
 
