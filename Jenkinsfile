@@ -1,5 +1,5 @@
 node{
-  on_commit{
+  on_commit to: master, {
     maven.run(["clean", "install"])
   }
 
