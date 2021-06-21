@@ -1,6 +1,8 @@
 libraries {
-	github {
-	   source_type = "github"
+	git {
+	   github {
+	      source_type = "github"
+	   }
 	}
 	
 	maven {
