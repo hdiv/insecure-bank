@@ -1,5 +1,5 @@
 node{
-  on_commit to: master {
+  on_commit {
     maven.run(["clean", "compile"])
     ws_scan()
   }
