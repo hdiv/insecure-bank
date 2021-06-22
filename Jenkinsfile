@@ -1,8 +1,7 @@
 node{
-  on_commit to: develop, {
-    maven.run(["clean", "compile"])
+  //on_commit to: develop, {
     ws_scan()
-  }
+  //}
 
   on_merge to: master, from: develop, {
     maven.run(["clean", "install"])
