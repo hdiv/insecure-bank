@@ -1,6 +1,8 @@
 libraries {
 	git {
 	  github 
+	  on_commit
+	  on_merge
 	}
 	maven {
 	   mavenID = "maven"
