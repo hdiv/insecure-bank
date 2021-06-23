@@ -8,7 +8,7 @@ libraries {
   }
   
   whitesource {
-    Product 	= "WhiteSource_Test"
-    Project 	= "Test_jenkins"
+    Product = "WhiteSource_Test"
+    Project = "Test_jenkins"
   }
 }
