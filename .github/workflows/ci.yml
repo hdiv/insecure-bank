@@ -16,5 +16,5 @@ jobs:
         java-package: jdk
         architecture: x64
     - name: Run tests
-      run: mvn -B package
+      run: mvn package
 
