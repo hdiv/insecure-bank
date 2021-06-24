@@ -4,7 +4,7 @@ jobs:
   sigma_code_scanning_run_steps:
     runs-on: ubuntu-latest
     container:
-      image: dtpoirot/sigma:sigma
+      image: dtpoirot/sigma
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
