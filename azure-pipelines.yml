@@ -12,7 +12,16 @@ steps:
     BlackDuckService: 'Testing.BlackDuck'
     DetectVersion: 'latest'
     DetectArguments: '--detect.project.name=MJ-insecure-bank'
-
+- task: synopsys-coverity@1
+  inputs:
+    coverityService: 'Coverity'
+    projectName: 'Insecure-Bank'
+    streamName: 'insecure-bank'
+    checkIssues: true
+    issueView: 'build-breakers'
+    issueStatus: 'failure'
+    coverityBuildDirectory: '$(Build.Repository.LocalPath)'
+    buildCommand: 'mvn clean install -DskipTests'
 - task: SynopsysPolaris@1
   inputs:
     polarisService: 'SIPSE.polaris.synopsys.com'
