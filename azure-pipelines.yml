@@ -1,11 +1,9 @@
-# Maven
-
-
-# Build your Java project and run tests with Apache Maven.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/java
-
 trigger:
+- task: SynopsysDetectTask@6
+  inputs:
+    BlackDuckService: 'Testing.BlackDuck'
+    DetectVersion: 'latest'
+    DetectArguments: '--detect.project.name=MJ-insecure-bank'
 - master
 
 pool:
