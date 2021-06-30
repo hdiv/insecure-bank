@@ -6,6 +6,9 @@ pool:
   demands:
    - agent.name -equals nuc
 
+variables:
+- name: COVERITY_TOOL_HOME
+  value: /home/siguser/cov-analysis-linux64-2021.03
 steps:
 - task: SynopsysDetectTask@6
   inputs:
