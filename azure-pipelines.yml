@@ -16,7 +16,7 @@ steps:
 - task: SynopsysPolaris@1
   inputs:
     polarisService: 'SIPSE.polaris.synopsys.com'
-    polarisCommand: 'polaris analyze'
+    polarisCommand: 'analyze'
     waitForIssues: true
 
 - task: CmdLine@2
