@@ -17,7 +17,7 @@ steps:
 - task: CmdLine@2
   displayName: 'Show Changeset'
   inputs:
-    script: "echo $CHANGE_SET"
+    script: 'echo $CHANGE_SET'
 
 - task: CmdLine@2
   displayName: 'Coverity Build'
