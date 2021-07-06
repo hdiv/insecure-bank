@@ -29,5 +29,11 @@ public class AdminController {
 
 		return "admin";
 	}
-
+	public int testDiv(int a, int b) {
+		if (a != 0) {
+			a = 10;
+		}
+		int i = b / a;
+		return i;
+	}
 }
