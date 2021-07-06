@@ -10,6 +10,17 @@ variables:
 - name: COVERITY_TOOL_HOME
   value: /home/siguser/cov-analysis-linux64-2021.03
 steps:
+- task: synopsys-coverity@1
+  inputs:
+    coverityService: 'Coverity'
+    projectName: 'Insecure-Bank'
+    streamName: 'insecure-bank'
+    checkIssues: true
+    issueView: 'build-breakers'
+    issueStatus: 'failure'
+    coverityBuildDirectory: '$(Build.Repository.LocalPath)'
+    coverityAnalysisType: 'incremental'
+    buildCommand: 'mvn clean install -DskipTests'
 - task: SynopsysDetectTask@6
   inputs:
     BlackDuckService: 'Testing.BlackDuck'
