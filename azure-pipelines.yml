@@ -14,6 +14,10 @@ steps:
   displayName: 'Get Changeset'
   inputs:
     script: "export CHANGE_SET=$(git --no-pager diff origin/master|stage|release --name-only | tr '\n' ' ')"
+- task: CmdLine@2
+  displayName: 'Show Changeset'
+  inputs:
+    script: "echo $CHANGE_SET"
 
 - task: CmdLine@2
   displayName: 'Coverity Build'
