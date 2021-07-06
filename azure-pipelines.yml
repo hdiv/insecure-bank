@@ -20,7 +20,7 @@ steps:
   inputs:
     script: 'cov-run-desktop --dir idir --url http://coverity:8080 --on-new-cert trust --stream insecure-bank --build mvn clean compile -DskipTests'
 
- task: CmdLine@2
+- task: CmdLine@2
   displayName: 'Coverity Incremental Analysis'
   inputs:
     script: 'cov-run-desktop --dir idir --url http://coverity:8080 --on-new-cert trust --stream insecure-bank --ignore-uncapturable-inputs true --reference-snapshot latest --present-in-reference false --exit1-if-defects true $CHANGE_SET'
