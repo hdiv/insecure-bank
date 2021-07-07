@@ -9,22 +9,19 @@ pool:
       value: "/master|stage|release/"
 
 steps:
-- task: CmdLine@2
-  inputs:
-    script: 'export POLARIS_FF_ENABLE_COVERITY_INCREMENTAL=true'
-- task: CmdLine@2
-  inputs:
-    script: "export CHANGE_SET=$(git --no-pager diff origin/master --name-only | tr '\n' ' ')"
-- task: CmdLine@2
-  inputs:
-    script: "echo $CHANGE_SET"
-    
+  
 - task: CmdLine@2
   inputs:
     script: |
+      export POLARIS_FF_ENABLE_COVERITY_INCREMENTAL=true
+      export POLARIS_ACCESS_TOKEN=nusqf489ud7f354ua4j45auedci7j6cajba1pu8ogrtb1dn5iusg
+      export CHANGE_SET=$(git --no-pager diff origin/master --name-only | tr '\n' ' ')
+      echo Change Set is [$CHANGE_SET]
+      echo $CHANGE_SET>change-set.txt
+
       wget -q https://sipse.polaris.synopsys.com/api/tools/polaris_cli-linux64.zip
       unzip -j polaris_cli-linux64.zip -d /tmp
-      /tmp/polaris install
-      /tmp/polaris -c polaris-inc.yml analyze -w
+      /tmp/polaris -c polaris-inc.yml install
+      /tmp/polaris -c polaris-inc.yml analyze -w --incremental change-set.txt
 
 
