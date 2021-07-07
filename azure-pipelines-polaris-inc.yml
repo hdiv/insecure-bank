@@ -4,13 +4,20 @@ trigger:
 pool:
   vmImage: ubuntu-latest
   
-variables:
-  MAIN_BRANCHES: "/master|stage|release/"
+  variables:
+    - name: MAIN_BRANCHES
+      value: "/master|stage|release/"
 
 steps:
 - task: CmdLine@2
   inputs:
-    script: 'export POLARIS_FF_ENABLE_COVERITY_INCREMENTAL=true'
+    script: |
+      export POLARIS_FF_ENABLE_COVERITY_INCREMENTAL=true'
+      export CHANGE_SET=$(git --no-pager diff origin/$MAIN_BRANCHES --name-only | tr '\n' ' ')
+- task: CmdLine@2
+  inputs:
+    script: 'echo $CHANGE_SET'
+    
 - task: CmdLine@2
   inputs:
     script: |
