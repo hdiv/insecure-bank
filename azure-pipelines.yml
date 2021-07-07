@@ -1,78 +1,94 @@
 trigger:
 - master
 
-pool:
-  name: MyAgentPool
-  demands:
-   - agent.name -equals nuc
+jobs:
+  - job: check
+    displayName: Check changed files
+    pool:
+        vmImage: ubuntu-latest
+    steps:
+      - task: ChangedFiles@1
+        name: CheckChanges
+        inputs:
+          rules: |
+            [CodeChanged]
+            src/**/*.java
+            src/**/*.jsp
 
-variables:
-- name: COVERITY_TOOL_HOME
-  value: /home/siguser/cov-analysis-linux64-2021.03
-steps:
-- task: ChangedFiles@1
-  inputs:
-    variable: 'HasChanged'
-    isOutput: true
-- task: CmdLine@2  
-  displayName: 'Get Changeset'
-  inputs:
-    script: "export CHANGE_SET=$(git --no-pager diff origin/master|stage|release --name-only | tr '\n' ' ')"
-- task: CmdLine@2
-  displayName: 'Show Changeset'
-  inputs:
-    script: 'echo $CHANGE_SET'
 
-- task: CmdLine@2
-  displayName: 'Coverity Build'
-  inputs:
-    script: 'cov-run-desktop --dir idir --url http://coverity:8080 --on-new-cert trust --stream insecure-bank --build mvn clean compile -DskipTests'
+  - job: build
+    displayName: Build only when code changes
+    dependsOn: check
+    condition: eq(dependencies.check.outputs['CheckChanges.HasChanged'], 'true')
+    pool:
+      name: MyAgentPool
+      demands:
+      - agent.name -equals nuc
 
-- task: CmdLine@2
-  displayName: 'Coverity Incremental Analysis'
-  inputs:
-    script: 'cov-run-desktop --dir idir --url http://coverity:8080 --on-new-cert trust --stream insecure-bank --ignore-uncapturable-inputs true --reference-snapshot latest --present-in-reference false --exit1-if-defects true $CHANGE_SET'
+    variables:
+    - name: COVERITY_TOOL_HOME
+      value: /home/siguser/cov-analysis-linux64-2021.06
 
-- task: synopsys-coverity@1
-  inputs:
-    coverityService: 'Coverity'
-    projectName: 'Insecure-Bank'
-    streamName: 'insecure-bank'
-    checkIssues: true
-    issueView: 'build-breakers'
-    issueStatus: 'failure'
-    coverityBuildDirectory: '$(Build.Repository.LocalPath)'
-    coverityAnalysisType: 'incremental'
-    buildCommand: 'mvn clean install -DskipTests'
-- task: SynopsysDetectTask@6
-  inputs:
-    BlackDuckService: 'Testing.BlackDuck'
-    DetectVersion: 'latest'
-    DetectArguments: '--detect.project.name=MJ-insecure-bank'
-- task: synopsys-coverity@1
-  inputs:
-    coverityService: 'Coverity'
-    projectName: 'Insecure-Bank'
-    streamName: 'insecure-bank'
-    checkIssues: true
-    issueView: 'build-breakers'
-    issueStatus: 'failure'
-    coverityBuildDirectory: '$(Build.Repository.LocalPath)'
-    buildCommand: 'mvn clean install -DskipTests'
-- task: SynopsysPolaris@1
-  inputs:
-    polarisService: 'SIPSE.polaris.synopsys.com'
-    polarisCommand: 'analyze'
-    waitForIssues: true
+    steps:
+      - task: ChangedFiles@1
+        inputs:
+          variable: 'HasChanged'
+          isOutput: true
+      - task: CmdLine@2
+        displayName: 'Show Changeset'
+        inputs:
+          script: 'echo $HasChanged'
 
-- task: CmdLine@2
-  displayName: 'Coverity Capture'
-  inputs:
-    script: 'coverity capture'
+      - task: CmdLine@2
+        displayName: 'Coverity Build'
+        inputs:
+          script: 'cov-run-desktop --dir idir --url http://coverity:8080 --on-new-cert trust --stream insecure-bank --build mvn clean compile -DskipTests'
 
-- task: CmdLine@2
-  displayName: 'Coverity Analysis'
-  inputs:
-    script: 'coverity analyze'
+      - task: CmdLine@2
+        displayName: 'Coverity Incremental Analysis'
+        inputs:
+          script: 'cov-run-desktop --dir idir --url http://coverity:8080 --on-new-cert trust --stream insecure-bank --ignore-uncapturable-inputs true --reference-snapshot latest --present-in-reference false --exit1-if-defects true $CHANGE_SET'
+
+      - task: synopsys-coverity@1
+        inputs:
+          coverityService: 'Coverity'
+          projectName: 'Insecure-Bank'
+          streamName: 'insecure-bank'
+          checkIssues: true
+          issueView: 'build-breakers'
+          issueStatus: 'failure'
+          coverityBuildDirectory: '$(Build.Repository.LocalPath)'
+          coverityAnalysisType: 'incremental'
+          buildCommand: 'mvn clean install -DskipTests'
+      - task: SynopsysDetectTask@6
+        inputs:
+          BlackDuckService: 'Testing.BlackDuck'
+          DetectVersion: 'latest'
+          DetectArguments: '--detect.project.name=MJ-insecure-bank'
+      - task: synopsys-coverity@1
+        inputs:
+          coverityService: 'Coverity'
+          projectName: 'Insecure-Bank'
+          streamName: 'insecure-bank'
+          checkIssues: true
+          issueView: 'build-breakers'
+          issueStatus: 'failure'
+          coverityBuildDirectory: '$(Build.Repository.LocalPath)'
+          buildCommand: 'mvn clean install -DskipTests'
+      - task: SynopsysPolaris@1
+        inputs:
+          polarisService: 'SIPSE.polaris.synopsys.com'
+          polarisCommand: 'analyze'
+          waitForIssues: true
+
+      - task: CmdLine@2
+        displayName: 'Coverity Capture'
+        inputs:
+          script: 'coverity capture'
+
+      - task: CmdLine@2
+        displayName: 'Coverity Analysis'
+        inputs:
+          script: 'coverity analyze'
 
 
