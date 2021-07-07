@@ -10,6 +10,33 @@ variables:
 - name: COVERITY_TOOL_HOME
   value: /home/siguser/cov-analysis-linux64-2021.03
 steps:
+- powershell: |
+      ## get the changed files
+      $files=$(git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion))
+      $temp=$files -split ' '
+      $count=$temp.Length
+      echo "Total changed $count files"
+     
+      For ($i=0; $i -lt $temp.Length; $i++)
+      {
+        $name=$temp[$i]
+        echo "this is $name file"
+        if ($name -like 'f1/*')  #if f1 is a subfolder under a folder use "- like '*/f1/*'"
+        { 
+          ##achive folder f1 if it is changed.
+          ##Compress-Archive -Path $(system.defaultworkingdirectory)/f1 -DestinationPath $(Build.ArtifactStagingDirectory)/f1.zip
+          
+          ##set the flag variable f1Flag to true
+          Write-Host "##vso[task.setvariable variable=f2Flag]true"
+        }
+        if ($name -like 'f2/*')
+        {
+          ##achive folder f2 if it is changed.
+          ##Compress-Archive -Path $(system.defaultworkingdirectory)/f2 -DestinationPath $(Build.ArtifactStagingDirectory)/f2.zip
+          ##set the flag variable f2Flag to true
+          Write-Host "##vso[task.setvariable variable=f2Flag]True"
+        }
+      }
 - task: CmdLine@2
   displayName: 'Get Changeset'
   inputs:
