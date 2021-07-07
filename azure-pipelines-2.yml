@@ -1,0 +1,18 @@
+trigger:
+- master
+
+jobs:
+  - job: build
+    
+    pool:
+      name: MyAgentPool
+      demands:
+      - agent.name -equals nuc
+
+    steps:
+      - task: SynopsysPolaris@1
+        inputs:
+          polarisService: 'SIPSE.polaris.synopsys.com'
+          polarisCommand: 'analyze'
+          waitForIssues: true
+
