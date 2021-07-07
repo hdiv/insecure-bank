@@ -1,0 +1,19 @@
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: CmdLine@2
+  inputs:
+    script: 'export POLARIS_FF_ENABLE_COVERITY_INCREMENTAL=true'
+- task: CmdLine@2
+  inputs:
+    script: |
+      wget -q https://sipse.polaris.synopsys.com/api/tools/polaris_cli-linux64.zip
+      unzip -j polaris_cli-linux64.zip -d /tmp
+      /tmp/polaris install
+      /tmp/polaris -c polaris-inc.yml analyze -w
+
+
