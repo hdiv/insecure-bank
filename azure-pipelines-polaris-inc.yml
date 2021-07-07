@@ -11,12 +11,13 @@ pool:
 steps:
 - task: CmdLine@2
   inputs:
-    script: |
-      export POLARIS_FF_ENABLE_COVERITY_INCREMENTAL=true'
-      export CHANGE_SET=$(git --no-pager diff origin/$MAIN_BRANCHES --name-only | tr '\n' ' ')
+    script: 'export POLARIS_FF_ENABLE_COVERITY_INCREMENTAL=true'
 - task: CmdLine@2
   inputs:
-    script: 'echo $CHANGE_SET'
+    script: "export CHANGE_SET=$(git --no-pager diff origin/$MAIN_BRANCHES --name-only | tr '\n' ' ')"
+- task: CmdLine@2
+  inputs:
+    script: "echo $CHANGE_SET"
     
 - task: CmdLine@2
   inputs:
