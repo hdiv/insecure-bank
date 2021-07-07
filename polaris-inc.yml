@@ -1,0 +1,46 @@
+version: "1"
+project:
+  name: ${scm.git.repo}
+  branch: ${scm.git.branch}
+  revision:
+    name: ${scm.git.commit}
+    date: ${scm.git.commit.date}
+capture:
+  build:
+    cleanCommands:
+    - shell: [mvn, -B, -f, pom.xml, clean]
+    buildCommands:
+    - shell: [mvn, -B, -f, pom.xml, install, -DskipTests]
+    coverity:
+      cov-build: [--desktop]
+  fileSystem:
+    ears:
+      extensions: [ear]
+      files:
+      - directory: ${project.projectDir}
+    java:
+      files:
+      - directory: ${project.projectDir}
+    javascript:
+      files:
+      - directory: ${project.projectDir}
+      - excludeRegex: node_modules|bower_components|vendor
+    php:
+      files:
+      - directory: ${project.projectDir}
+    python:
+      files:
+      - directory: ${project.projectDir}
+    ruby:
+      files:
+      - directory: ${project.projectDir}
+    wars:
+      extensions: [war]
+      files:
+      - directory: ${project.projectDir}
+analyze:
+  mode: local
+install:
+  coverity:
+    version: default
+serverUrl: https://sipse.polaris.synopsys.com
