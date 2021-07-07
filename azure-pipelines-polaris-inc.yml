@@ -12,7 +12,7 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
-      export POLARIS_FF_ENABLE_COVERITY_INCREMENTAL=true'
+      export POLARIS_FF_ENABLE_COVERITY_INCREMENTAL=true
       export POLARIS_ACCESS_TOKEN=nusqf489ud7f354ua4j45auedci7j6cajba1pu8ogrtb1dn5iusg
 - task: CmdLine@2
   inputs:
