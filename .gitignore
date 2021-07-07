@@ -7,3 +7,6 @@ build.xml
 /.apt_generated_tests/
 idir/
 .vscode/
+.polaris-coverity.zip
+.synopsys/
+data_coverity/
