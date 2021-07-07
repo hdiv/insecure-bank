@@ -9,4 +9,5 @@ idir/
 .vscode/
 .polaris-coverity.zip
 .synopsys/
-data_coverity/
+data-coverity/
+auth-key
