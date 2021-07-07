@@ -1,0 +1,27 @@
+trigger:
+- master
+
+jobs:
+  - job: build
+    
+    pool:
+      name: MyAgentPool
+      demands:
+      - agent.name -equals nuc
+
+    variables:
+    - name: COVERITY_TOOL_HOME
+      value: /home/siguser/cov-analysis-linux64-2021.06
+
+    steps:
+      - task: synopsys-coverity@1
+        inputs:
+          coverityService: 'Coverity'
+          projectName: 'Insecure-Bank'
+          streamName: 'insecure-bank'
+          checkIssues: true
+          issueView: 'build-breakers'
+          issueStatus: 'failure'
+          coverityBuildDirectory: '$(Build.Repository.LocalPath)'
+          buildCommand: 'mvn clean install -DskipTests'
+
