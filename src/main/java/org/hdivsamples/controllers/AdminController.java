@@ -33,6 +33,7 @@ public class AdminController {
 		if (a != 0) {
 			a = 10;
 		}
+		
 		int i = b / a;
 		return i;
 	}
