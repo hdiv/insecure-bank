@@ -1,0 +1,30 @@
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+  
+  variables:
+    - name: MAIN_BRANCHES
+      value: "/master|stage|release/"
+
+steps:
+- task: CmdLine@2
+  inputs:
+    script: 'export POLARIS_FF_ENABLE_COVERITY_INCREMENTAL=true'
+- task: CmdLine@2
+  inputs:
+    script: "export CHANGE_SET=$(git --no-pager diff origin/master --name-only | tr '\n' ' ')"
+- task: CmdLine@2
+  inputs:
+    script: "echo $CHANGE_SET"
+    
+- task: CmdLine@2
+  inputs:
+    script: |
+      wget -q https://sipse.polaris.synopsys.com/api/tools/polaris_cli-linux64.zip
+      unzip -j polaris_cli-linux64.zip -d /tmp
+      /tmp/polaris install
+      /tmp/polaris -c polaris-inc.yml analyze -w
+
+
