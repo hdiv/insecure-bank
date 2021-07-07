@@ -3,6 +3,9 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
+  
+variables:
+  MAIN_BRANCHES: "/master|stage|release/"
 
 steps:
 - task: CmdLine@2
