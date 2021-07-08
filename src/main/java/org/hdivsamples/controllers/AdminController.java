@@ -32,8 +32,10 @@ public class AdminController {
 	public int testDiv(int a, int b) {
 		if (a != 0) {
 			a = 10;
+		} else {
+			a = 1;
 		}
-		
+
 		int i = b / a;
 		return i;
 	}
