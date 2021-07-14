@@ -20,7 +20,7 @@ libraries {
   	}
   }
   
-  checkmarx {
+  @merge checkmarx {
     ProjectName = "CxServer\\SP\\Solarwinds\\MSP_N-Central\\Test_project"
     Language = "Java"
   }
