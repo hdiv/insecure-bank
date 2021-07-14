@@ -4,7 +4,7 @@ jte {
 
 libraries {
   maven {
-  	maven {
+    maven {
       version = "3.8.1"
       settings = "settings.xml"
       modules = "test1,test2"
