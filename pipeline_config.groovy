@@ -6,7 +6,6 @@ libraries {
   maven {
     maven {
       version = "3.8.1"
-      Stage = "test"
       //settings = "settings.xml"
       //modules = "test1,test2,core"
     }
