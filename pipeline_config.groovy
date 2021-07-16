@@ -29,5 +29,6 @@ libraries {
   whitesource {
     Product = "WhiteSource_Test"
     Project = "Test_jenkins"
+    User_Key = "user_key"
   }
 }
