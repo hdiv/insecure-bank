@@ -6,6 +6,7 @@ libraries {
   maven {
     maven {
       version = "3.8.1"
+      artifact_version = "1.0.1"
       //settings = "settings.xml"
       //modules = "test1,test2,core"
     }
