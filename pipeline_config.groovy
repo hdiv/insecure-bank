@@ -34,6 +34,6 @@ libraries {
   }
   
   trivy {
-    Image_Name = "VulnCheck:insecure-bank"
+    Image_Name = "vuln-check:insecure-bank"
   }
 }
