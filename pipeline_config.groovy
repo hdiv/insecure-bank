@@ -32,4 +32,8 @@ libraries {
     Project = "Test_jenkins"
     User_Key = "user_key"
   }
+  
+  trivy {
+    Image_Name = "VulnCheck:insecure-bank"
+  }
 }
