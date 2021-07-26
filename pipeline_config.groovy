@@ -6,7 +6,7 @@ libraries {
   maven {
     maven {
       version = "3.8.1"
-      artifact_version = "1.0.1"
+      //artifact_version = "1.0.1"
       //settings = "settings.xml"
       //modules = "test1,test2,core"b
     }
@@ -24,7 +24,7 @@ libraries {
   checkmarx {
     ProjectName = "CxServer\\SP\\Solarwinds\\MSP_N-Central\\Test_project"
     Language = "Java"
-    CxCred 	 = "Cx-Access"
+    CxCred  = "Cx-Access"
   }
   
   whitesource {
