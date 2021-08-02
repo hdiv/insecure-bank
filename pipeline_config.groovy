@@ -35,7 +35,7 @@ libraries {
   
   trivy {
     Image_Name = "vuln-check:insecure-bank"
-    Break_Build = 0
+    Break_Build = 1
     Report_Format = "table"
   }
 }
