@@ -34,7 +34,7 @@ libraries {
   }
   */
   trivy {
-    Opt_In = "No"
+    Opt_In = "AKls"
   }
 
 }
