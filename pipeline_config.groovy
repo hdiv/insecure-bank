@@ -32,10 +32,7 @@ libraries {
     Project = "Test_jenkins_local"
     User_Key = "user_key"
   }
-  
-  trivy {
-    Image_Name = "vuln-check:insecure-bank"
-    Break_Build = 0
-    Report_Format = "table"
-  } */
+  */
+  trivy
+
 }
