@@ -20,7 +20,7 @@ libraries {
       codeartifact_output = "text"
   	}
   }
-  
+/*  
   checkmarx {
     ProjectName = "CxServer\\SP\\Solarwinds\\MSP_N-Central\\Test_project"
     Language = "Java"
@@ -37,5 +37,5 @@ libraries {
     Image_Name = "vuln-check:insecure-bank"
     Break_Build = 0
     Report_Format = "table"
-  }
+  } */
 }
