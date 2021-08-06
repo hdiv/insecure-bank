@@ -33,6 +33,8 @@ libraries {
     User_Key = "user_key"
   }
   */
-  trivy
+  trivy {
+    Opt_In = "No"
+  }
 
 }
