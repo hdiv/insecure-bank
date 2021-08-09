@@ -1,6 +1,6 @@
 jte {
   pipeline_template = "java"
-    pipeline_template = "test"
+  pipeline_template = "new"
 }
 
 libraries {
