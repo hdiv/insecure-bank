@@ -1,6 +1,4 @@
 jte {
-
-  pipeline_template = "new"
   pipeline_template = "java"
 }
 
@@ -36,7 +34,7 @@ libraries {
   }
   */
   trivy {
-    Opt_In = "YeS"
+    Opt_In = "no"
   }
 
 }
