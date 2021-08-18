@@ -6,7 +6,7 @@ libraries {
   maven {
     maven {
       	Phases = ["clean"]
-	Maven_Properties = ["skipTests":"true"]
+	//Maven_Properties = ["skipTests":"true"]
 	Stage = "on_commit-test"
 	version = "3.8.1"
 	//artifact_version = "1.0.1" test
