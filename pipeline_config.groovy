@@ -5,13 +5,13 @@ jte {
 libraries {
   maven {
     maven {
-      Phases = ["clean"]
-			Maven_Properties = properties:["skipTests":"true"]
-			Stage = "on_commit-test"
-      version = "3.8.1"
-      //artifact_version = "1.0.1" test
-      //settings = "settings.xml"
-      //modules = "test1,test2,core"b
+      	Phases = ["clean"]
+	Maven_Properties = "skipTests":"true"
+	Stage = "on_commit-test"
+	version = "3.8.1"
+	//artifact_version = "1.0.1" test
+	//settings = "settings.xml"
+	//modules = "test1,test2,core"b
     }
   
     aws {
