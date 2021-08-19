@@ -39,5 +39,8 @@ libraries {
   trivy {
     Opt_In = "no"
   }
-
+  
+	checkov {
+		File = "iac.json"		
+	}
 }
