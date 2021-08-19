@@ -41,6 +41,6 @@ libraries {
   }
   
 	checkov {
-		File = "iac.json"		
+		Report = "iac.json"		
 	}
 }
