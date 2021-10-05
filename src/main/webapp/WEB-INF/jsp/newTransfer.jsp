@@ -162,6 +162,7 @@
 								</div>
 							</div>
 						</div>
+						<%@ include file="/WEB-INF/jsp/template/bottom.jsp"%>
 					</div>
 					<!-- END MAIN CONTENT -->
 				</div>

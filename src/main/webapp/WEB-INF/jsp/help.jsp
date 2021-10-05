@@ -1,5 +1,34 @@
 <%@ include file="/WEB-INF/jsp/template/tags.jsp"%>
-<%@ include file="/WEB-INF/jsp/template/header.jsp"%>
+
+
+<!DOCTYPE html>
+<!--[if IE 9 ]><html class="ie ie9" lang="en" class="no-js"> <![endif]-->
+<!--[if !(IE)]><!--><html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+	<title>Insecure Bank</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="description" content="HDIV-EE-BANK">
+	<meta name="author" content="The Develovers">
+
+	<!-- CSS -->
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="${pageContext.request.contextPath}/resources/css/ionicons.min.css" rel="stylesheet" type="text/css">
+	<link href="${pageContext.request.contextPath}/resources/css/main.css" rel="stylesheet" type="text/css">
+	<link href="${pageContext.request.contextPath}/resources/css/skins/blue-light-nav.css" rel="stylesheet" type="text/css">
+	<link href="${pageContext.request.contextPath}/resources/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+		
+	<!-- Google Fonts -->
+	<link href='${pageContext.request.contextPath}/resources/css/google-fonts.css' rel='stylesheet' type='text/css'>
+	
+	<!-- Fav and touch icons -->
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="${pageContext.request.contextPath}/resources/ico/queenadmin-favicon144x144.png">
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="${pageContext.request.contextPath}/resources/ico/queenadmin-favicon114x114.png">
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="${pageContext.request.contextPath}/resources/ico/queenadmin-favicon72x72.png">
+	<link rel="apple-touch-icon-precomposed" sizes="57x57" href="${pageContext.request.contextPath}/resources/ico/queenadmin-favicon57x57.png">
+	<link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/ico/favicon.ico">
+
+</head>
 
 <body class="static-tables">
 
@@ -71,8 +100,8 @@
 							<spring:url value="/dashboard" var="index" />
 							<spring:url value="/activity" var="activity" />
 							
-								<li><a href="${index}"><i class="icon ion-ios7-speedometer"></i><span class="text">Dashboard</span></a></li>
-								<li class="active"><a href="${activity}"><i class="icon ion-clipboard"></i><span class="text">Accounts activity</span></a></li>							
+								<li class="active"><a href="${index}"><i class="icon ion-ios7-speedometer"></i><span class="text">Dashboard</span></a></li>
+								<li><a href="${activity}"><i class="icon ion-clipboard"></i><span class="text">Accounts activity</span></a></li>							
 								<li class="has-submenu">
 									<a href="#" class="submenu-toggle"><i class="icon ion-android-note"></i><span class="text">Transfers</span></a>
 									<ul class="list-unstyled sub-menu collapse">
@@ -90,51 +119,31 @@
 						<div class="main-content">
 							<div class="primary-content">
 								<div class="heading clearfix">
-									<h2>CREDIT CARD ACTIVITY</h2>
+									<h2>HELP</h2>
 									<ul class="breadcrumb pull-left">
 										<li><i class="icon ion-home"></i><a href="${index}">Home</a></li>
-										<li><a href="#">Credit card activity</a></li>
+										<li><a href="#">Help</a></li>
 									</ul>
 								</div>
-																
+								<!-- RESPONSIVE TABLE -->
 								<div class="widget">
-											<div class="widget-header clearfix">
-												<h3><i class="icon ion-clipboard"></i> <span>ACTIVITY SUMARY | <c:out value="${actualCreditCardNumber}"></c:out></span></h3>
-											</div>
-											<div class="widget-content">
-												<table class="table table-bordered  colored-header">
-													<thead>
-														<tr><th>Date</th><th>Description</th><th>Charge</th></tr>
-													</thead>
-													<tbody>
-													<tr>
-															<td>14-04-2017</td>
-															<td>Amazon Inc.</td>
-															<td>120.30 EUR</td>		
-													</tr>
-													<tr>
-															<td>13-04-2017</td>
-															<td>Vodafone</td>
-															<td>20.10 EUR</td>		
-													</tr>
-													</tbody>
-												</table>
-											</div>
-										</div>							
-					
-
+									<div class="widget-header clearfix">
+										<h3><i class="icon ion-clipboard"></i> <span>Help</span></h3>
+									</div>
+									<div class="widget-content">
+										Please, select an option in the left menu to test the application.
 									</div>
 								</div>
 
 							</div>
+						</div>
+						</div>
 							<%@ include file="/WEB-INF/jsp/template/bottom.jsp"%>
 						</div>
 						<!-- END MAIN CONTENT -->
 					</div>
 				</div>				
-				
-				
-				
+
 			</div>
 		<div class="left-content-bg col-md-2"></div>
 	<!-- END WRAPPER -->
