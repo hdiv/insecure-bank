@@ -124,7 +124,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>4.1.0.Final</version>
+			<version>4.3.2.Final</version>
 		</dependency>
 		<!-- JAXB -->
 		<dependency>
@@ -160,27 +160,10 @@
 			<version>1.5.3</version>
 		</dependency>
 		<!-- Logging -->
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${org.slf4j-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>${org.slf4j-version}</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
-			<scope>runtime</scope>
+		 <dependency>
+		   <groupId>org.apache.logging.log4j</groupId>
+		   <artifactId>log4j-slf4j-impl</artifactId>
+		   <version>2.14.1</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-fileupload</groupId>

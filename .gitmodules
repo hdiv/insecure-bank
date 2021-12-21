@@ -1,0 +1,3 @@
+[submodule "log4j-cve-2021-44228"]
+	path = log4j-cve-2021-44228
+	url = https://github.com/manuel-alvarez-alvarez/log4j-cve-2021-44228
