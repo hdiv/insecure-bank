@@ -1,4 +1,5 @@
 FROM gradle:7.3.1-jdk17 AS builder
+LABEL maintainer="Hdiv Security"
 
 COPY --chown=gradle:gradle ./log4j-cve-2021-44228 /home/gradle/src
 WORKDIR /home/gradle/src
