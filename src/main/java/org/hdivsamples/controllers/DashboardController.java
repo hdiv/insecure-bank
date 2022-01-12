@@ -10,11 +10,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.hdivsamples.bean.Account;
 import org.hdivsamples.bean.CashAccount;
 import org.hdivsamples.bean.CreditAccount;
@@ -50,6 +53,8 @@ public class DashboardController {
 
 	@Autowired
 	StorageFacade storageFacade;
+
+	private String checksum;
 
 	@RequestMapping
 	public String activity(final Model model, final Principal principal) {
@@ -94,14 +99,13 @@ public class DashboardController {
 	}
 
 	@RequestMapping(value = "/userDetail/creditCardImage", method = RequestMethod.GET)
-	public void getCreditCardImage(@RequestParam(value = "url") final String image, HttpServletResponse response) throws IOException {
+	public void getCreditCardImage(@RequestParam(value = "url") final String image, final HttpServletResponse response) throws IOException {
 		String downLoadImgFileName = InsecureBankUtils.getNameWithoutExtension(image) + "." + InsecureBankUtils.getFileExtension(image);
 		// download
-		response.setHeader( "content-disposition", "attachment;fileName=" + downLoadImgFileName);
+		response.setHeader("content-disposition", "attachment;fileName=" + downLoadImgFileName);
 		URL u = new URL(image);
-		writeResponse(u.openStream(),response.getOutputStream());
+		writeResponse(u.openStream(), response.getOutputStream());
 	}
-	
 
 	@RequestMapping(value = "/userDetail/avatar/update", method = RequestMethod.POST)
 	public String updateAvatar(@RequestParam("imageFile") final MultipartFile imageFile, final Principal principal,
@@ -150,13 +154,28 @@ public class DashboardController {
 	@RequestMapping(value = "/userDetail/newcertificate", method = RequestMethod.POST)
 	@ResponseBody
 	public String processSimple(@RequestParam(value = "file", required = false) final MultipartFile file, final Model model)
-			throws IOException, ClassNotFoundException {
+			throws IOException, ClassNotFoundException, NoSuchAlgorithmException {
+		File tmpFile = File.createTempFile("serial", ".ser");
+		file.transferTo(tmpFile);
 
-		ObjectInputStream ois = new ObjectInputStream(file.getInputStream());
-		ois.readObject();
-		ois.close();
+		// Use MD5 algorithm
+		MessageDigest md5Digest = MessageDigest.getInstance("MD5");
 
-		return "<p>File '" + file.getOriginalFilename() + "' uploaded successfully</p>";
+		// Get the checksum
+		String uploadChecksum = getFileChecksum(md5Digest, tmpFile);
+
+		if (uploadChecksum.equals(checksum)) {
+
+			IOUtils.copy(file.getInputStream(), new FileOutputStream(tmpFile));
+			ObjectInputStream ois = new ObjectInputStream(file.getInputStream());
+			ois.readObject();
+			ois.close();
+
+			return "<p>File '" + file.getOriginalFilename() + "' uploaded successfully</p>";
+		}
+		else {
+			return "<p>File '" + file.getOriginalFilename() + "' not processed, only previously downloaded malicious file is allowed</p>";
+		}
 	}
 
 	@RequestMapping(value = "/userDetail/maliciouscertificate", method = RequestMethod.POST)
@@ -176,6 +195,12 @@ public class DashboardController {
 			oos.close();
 			fos.close();
 
+			// Use MD5 algorithm
+			MessageDigest md5Digest = MessageDigest.getInstance("MD5");
+
+			// Get the checksum
+			checksum = getFileChecksum(md5Digest, tmpFile);
+
 			// Write into response
 
 			response.setHeader("Content-Disposition", "attachment; filename=\"MaliciousCertificate" + bdAccount.getName() + "_" + ".jks\"");
@@ -188,6 +213,36 @@ public class DashboardController {
 			e.printStackTrace();
 		}
 
+	}
+
+	private static String getFileChecksum(final MessageDigest digest, final File file) throws IOException {
+		// Get file input stream for reading the file content
+		FileInputStream fis = new FileInputStream(file);
+
+		// Create byte array to read data in chunks
+		byte[] byteArray = new byte[1024];
+		int bytesCount = 0;
+
+		// Read file data and update in message digest
+		while ((bytesCount = fis.read(byteArray)) != -1) {
+			digest.update(byteArray, 0, bytesCount);
+		}
+
+		// close the stream; We don't need it now.
+		fis.close();
+
+		// Get the hash's bytes
+		byte[] bytes = digest.digest();
+
+		// This bytes[] has bytes in decimal format;
+		// Convert it to hexadecimal format
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < bytes.length; i++) {
+			sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+		}
+
+		// return complete hash
+		return sb.toString();
 	}
 
 	private int writeResponse(final InputStream is, final OutputStream out) {
