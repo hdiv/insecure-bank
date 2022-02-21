@@ -12,7 +12,7 @@ jobs:
 
       - name: Run a one-line script
         run: |
-          echo $COVERITY_TOOL_HOME
+          echo ${{ env.COVERITY_TOOL_HOME }}
           #$COVERITY_TOOL_HOME\\bin\\cov-build --ident
           #mvn clean package -DskipTests
           
