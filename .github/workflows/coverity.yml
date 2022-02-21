@@ -12,7 +12,8 @@ jobs:
 
       - name: Run a one-line script
         run: |
-          ${{ env.COVERITY_TOOL_HOME }}\bin\cov-build.exe --dir emitdir mvn clean package -DskipTests=true
+          ${{ env.COVERITY_TOOL_HOME }}\bin\cov-build --dir emitdir mvn clean package -DskipTests=true
+          ${{ env.COVERITY_TOOL_HOME }}\bin\cov-emit-java --dir emitdir --ticker-mode none --war target\insecure-bank.war
           ${{ env.COVERITY_TOOL_HOME }}\bin\cov-analyze --dir emitdir --ticker-mode none --all --webapp-security --enable-audit-mode --strip-path $PWD
           ${{ env.COVERITY_TOOL_HOME }}\bin\cov-format-errors --dir emitdir --json-output-v7 coverity-results.json
 
