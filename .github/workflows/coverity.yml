@@ -20,7 +20,7 @@ jobs:
 
       - name: Convert Coverity results to SARIF
         run: |
-          ${{ env.COVERITY_TOOL_HOME }}\node\bin\node ${{ env.COVERITY_TOOL_HOME }}\SARIF\cov-format-sarif-for-github.js -i coverity-results.json -r gubraun/insecure-bank -c gubraun/insecure-bank "$pwd" "$(git rev-parse HEAD)" -o coverity-results.sarif
+          ${{ env.COVERITY_TOOL_HOME }}\node\bin\node ${{ env.COVERITY_TOOL_HOME }}\SARIF\cov-format-sarif-for-github.js -i coverity-results.json -r "gubraun/insecure-bank" -c "gubraun/insecure-bank" "$pwd" "$(git rev-parse HEAD)" -o coverity-results.sarif
           
       - name: Upload SARIF file to GitHub UI
         uses: github/codeql-action/upload-sarif@v1
