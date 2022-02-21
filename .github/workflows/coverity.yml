@@ -12,16 +12,17 @@ jobs:
 
       - name: Run a one-line script
         run: |
-          ${{ env.COVERITY_TOOL_HOME }}\bin\cov-build --dir emitdir mvn clean package -DskipTests=true
-          ${{ env.COVERITY_TOOL_HOME }}\bin\cov-emit-java --dir emitdir --ticker-mode none --war target\insecure-bank.war
-          ${{ env.COVERITY_TOOL_HOME }}\bin\cov-analyze --dir emitdir --ticker-mode none --all --webapp-security --enable-audit-mode --strip-path $PWD
-          ${{ env.COVERITY_TOOL_HOME }}\bin\cov-format-errors --dir emitdir --json-output-v7 coverity-results.json
+          echo Hallo
+          #${{ env.COVERITY_TOOL_HOME }}\bin\cov-build --dir emitdir mvn clean package -DskipTests=true
+          #${{ env.COVERITY_TOOL_HOME }}\bin\cov-emit-java --dir emitdir --ticker-mode none --war target\insecure-bank.war
+          #${{ env.COVERITY_TOOL_HOME }}\bin\cov-analyze --dir emitdir --ticker-mode none --all --webapp-security --enable-audit-mode --strip-path $PWD
+          #${{ env.COVERITY_TOOL_HOME }}\bin\cov-format-errors --dir emitdir --json-output-v7 coverity-results.json
 
-      - name: Convert Coverity results to SARIF
-        run: |
-          ${{ env.COVERITY_TOOL_HOME }}\node\bin\node ${{ env.COVERITY_TOOL_HOME }}\SARIF\cov-format-sarif-for-github.js -i coverity-results.json -r gubraun/insecure-bank -c gubraun/insecure-bank $PWD `git rev-parse HEAD` -o coverity-results.sarif
+      #- name: Convert Coverity results to SARIF
+      #  run: |
+      #    ${{ env.COVERITY_TOOL_HOME }}\node\bin\node ${{ env.COVERITY_TOOL_HOME }}\SARIF\cov-format-sarif-for-github.js -i coverity-results.json -r gubraun/insecure-bank -c gubraun/insecure-bank $PWD `git rev-parse HEAD` -o coverity-results.sarif
           
-      - name: Upload SARIF file to GitHub UI
-        uses: github/codeql-action/upload-sarif@v1
-        with:
-          sarif_file: coverity-results.sarif
+      #- name: Upload SARIF file to GitHub UI
+      #  uses: github/codeql-action/upload-sarif@v1
+      #  with:
+      #    sarif_file: coverity-results.sarif
