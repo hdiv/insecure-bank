@@ -1,0 +1,29 @@
+name: Black Duck Action
+on:
+  workflow_dispatch:
+jobs:
+  detect:
+    name: Scan with Black Duck
+    runs-on: ubuntu-latest
+    steps:  
+      - uses: actions/checkout@v2
+      # Set up JDK 11 in runtime environment
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+      # Run Synopsys Detect
+      - name: Run Synopsys Detect
+        uses: synopsys-sig/detect-action@v0.3.1
+        #env:
+        #  DETECT_DIAGNOSTIC: true
+        #  DETECT_TOOLS: DETECTOR
+        #  DETECT_CLEANUP: false
+        #  DETECT_DETECTOR_SEARCH_DEPTH: 5
+        with:
+          scan-mode: INTELLIGENT
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          detect-version: 7.11.0
+          blackduck-url: ${{ secrets.BLACKDUCK_URL }}
+          blackduck-api-token: ${{ secrets.BLACKDUCK_API_TOKEN }}
