@@ -8,7 +8,7 @@ jobs:
     env:
       COVERITY_TOOL_HOME: 'C:\usr\coverity\cov-analysis-win64-2021.12.1'
     steps:
-      #- uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
       - name: Run a one-line script
         run: |
