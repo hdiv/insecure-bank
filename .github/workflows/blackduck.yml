@@ -1,4 +1,4 @@
-name: Black Duck Action
+name: Black Duck
 on:
   workflow_dispatch:
 jobs:
