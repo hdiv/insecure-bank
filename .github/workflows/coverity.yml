@@ -1,17 +1,18 @@
 name: Coverity
-env:
-  COVERITY_TOOL_HOME: 'C:\usr\coverity\cov-analysis-win64-2021.12.1'
+
 on:
   workflow_dispatch:
 jobs:
   scan:
     runs-on: self-hosted
+    env:
+      COVERITY_TOOL_HOME: 'C:\\usr\\coverity\\cov-analysis-win64-2021.12.1'
     steps:
       - uses: actions/checkout@v2
 
       - name: Run a one-line script
         run: |
-          $COVERITY_TOOL_HOME\bin\cov-build --ident
+          $COVERITY_TOOL_HOME\\bin\\cov-build --ident
           #mvn clean package -DskipTests
           
 
