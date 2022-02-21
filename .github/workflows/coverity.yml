@@ -12,11 +12,15 @@ jobs:
 
       - name: Run a one-line script
         run: |
-          ${{ env.COVERITY_TOOL_HOME }}\bin\cov-build.exe --ident
-          #mvn clean package -DskipTests=true
-          
+          ${{ env.COVERITY_TOOL_HOME }}\bin\cov-build.exe --dir emitdir mvn clean package -DskipTests=true
+          ${{ env.COVERITY_TOOL_HOME }}\bin\cov-analyze --dir emitdir --ticker-mode none --all --webapp-security --enable-audit-mode --strip-path $PWD
+          ${{ env.COVERITY_TOOL_HOME }}\bin\cov-format-errors --dir emitdir --json-output-v7 coverity-results.json
 
-      - name: Run a multi-line script
+      - name: Convert Coverity results to SARIF
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          ${{ env.COVERITY_TOOL_HOME }}\node\bin\node ${{ env.COVERITY_TOOL_HOME }}\SARIF\cov-format-sarif-for-github.js -i coverity-results.json -r gubraun/insecure-bank -c gubraun/insecure-bank $PWD `git rev-parse HEAD` -o coverity-results.sarif
+          
+      - name: Upload SARIF file to GitHub UI
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: coverity-results.sarif
