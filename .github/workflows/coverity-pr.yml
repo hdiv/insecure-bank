@@ -38,6 +38,6 @@ jobs:
           $COVERITY_TOOL_HOME/bin/cov-format-errors --dir emitdir --json-output-v7 coverity-results.json
       
       - name: Parse Coverity JSON
-        uses: synopsys-sig/coverity-report-output-v7-json@v0.0.0
+        uses: gubraun/coverity-report-output-v7-json@v0.0.0
         with:
           json-file-path: ./coverity-results.json
