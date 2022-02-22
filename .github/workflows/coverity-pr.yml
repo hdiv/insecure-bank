@@ -1,32 +1,43 @@
-name: Coverity
+name: Coverity on PR
 
 on:
-  workflow_dispatch:
+  pull_request:
+    branches: [ main ]
+    
 jobs:
   scan:
     runs-on: self-hosted
     env:
       COVERITY_TOOL_HOME: '/opt/cov-analysis-linux64-2021.12.0'
+      COVERITY_URL: ${{ secrets.COVERITY_URL }}
+      COVERITY_USER: ${{ secrets.COVERITY_USER }}
+      COVERITY_PASSPHRASE: ${{ secrets.COVERITY_PASSPHRASE }}
+      SECURITY_GATE_VIEW: OWASP Web Top 10
+
     steps:
       - uses: actions/checkout@v2
 
-      - name: Coverity scan
+      - name: Create Coverity stream
+        if: ${{github.event_name == 'push'}}
         run: |
-          ${{ env.COVERITY_TOOL_HOME }}/bin/cov-build --dir emitdir mvn clean package -DskipTests=true
-          ${{ env.COVERITY_TOOL_HOME }}/bin/cov-emit-java --dir emitdir --war target/insecure-bank.war
-          ${{ env.COVERITY_TOOL_HOME }}/bin/cov-analyze --dir emitdir --ticker-mode none --webapp-security --strip-path `pwd`
-          ${{ env.COVERITY_TOOL_HOME }}/bin/cov-format-errors --dir emitdir --json-output-v7 coverity-results.json
+          env
+          export COVERITY_STREAM_NAME=${GITHUB_REPOSITORY##*/}-${GITHUB_REF##*/}
+          echo Ensure that stream "$COVERITY_STREAM_NAME" exists
+          $COVERITY_TOOL_HOME/bin/cov-manage-im --url $COVERITY_URL --user $COVERITY_USER --password $COVERITY_PASSPHRASE --on-new-cert trust --mode projects --add --set name:"$COVERITY_STREAM_NAME" || true
+          $COVERITY_TOOL_HOME/bin/cov-manage-im --url $COVERITY_URL --user $COVERITY_USER --password $COVERITY_PASSPHRASE --on-new-cert trust --mode streams --add -set name:"$COVERITY_STREAM_NAME" || true
+          $COVERITY_TOOL_HOME/bin/cov-manage-im --url $COVERITY_URL --user $COVERITY_USER --password $COVERITY_PASSPHRASE --on-new-cert trust --mode projects --update --name "$COVERITY_STREAM_NAME" --insert stream:"$COVERITY_STREAM_NAME"
 
-      - name: Convert Coverity results to SARIF
+      - name: Coverity Scan (Full Analysis)
+        if: ${{github.event_name == 'push'}}
         run: |
-          ${{ env.COVERITY_TOOL_HOME }}/node/bin/node ${{ env.COVERITY_TOOL_HOME }}/SARIF/cov-format-sarif-for-github.js -i coverity-results.json -r gubraun/insecure-bank -c gubraun/insecure-bank `pwd` `git rev-parse HEAD` -o coverity-results.sarif
-          
-      - name: Upload SARIF file to GitHub UI
-        uses: github/codeql-action/upload-sarif@v1
-        with:
-          sarif_file: coverity-results.sarif
-          
+          export COVERITY_STREAM_NAME=${GITHUB_REPOSITORY##*/}-${GITHUB_REF##*/}
+          $COVERITY_TOOL_HOME/bin/cov-build --dir emitdir mvn clean package -DskipTests=true
+          $COVERITY_TOOL_HOME/bin/cov-emit-java --dir emitdir --war target/insecure-bank.war
+          $COVERITY_TOOL_HOME/bin/cov-analyze --dir emitdir --ticker-mode none --webapp-security --strip-path `pwd`
+          $COVERITY_TOOL_HOME/bin/cov-commit-defects --dir emitdir --url $COVERITY_URL --user $COVERITY_USER --password $COVERITY_PASSPHRASE --ticker-mode none --on-new-cert trust --stream $COVERITY_STREAM_NAME --scm git --description "GitHub Workflow $GITHUB_WORKFLOW for $GITHUB_REPO" --version $GITHUB_SHA
+          $COVERITY_TOOL_HOME/bin/cov-format-errors --dir emitdir --json-output-v7 coverity-results.json
+      
       - name: Parse Coverity JSON
         uses: synopsys-sig/coverity-report-output-v7-json@v0.0.0
         with:
-          json-file-path: coverity-results.json
+          json-file-path: ./coverity-results.json
