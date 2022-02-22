@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Create Coverity stream
-        if: ${{github.event_name == 'push'}}
+        #if: ${{github.event_name == 'push'}}
         run: |
           env
           export COVERITY_STREAM_NAME=${GITHUB_REPOSITORY##*/}-${GITHUB_REF##*/}
@@ -28,7 +28,7 @@ jobs:
           $COVERITY_TOOL_HOME/bin/cov-manage-im --url $COVERITY_URL --user $COVERITY_USER --password $COVERITY_PASSPHRASE --on-new-cert trust --mode projects --update --name "$COVERITY_STREAM_NAME" --insert stream:"$COVERITY_STREAM_NAME"
 
       - name: Coverity Scan (Full Analysis)
-        if: ${{github.event_name == 'push'}}
+        #if: ${{github.event_name == 'push'}}
         run: |
           export COVERITY_STREAM_NAME=${GITHUB_REPOSITORY##*/}-${GITHUB_REF##*/}
           $COVERITY_TOOL_HOME/bin/cov-build --dir emitdir mvn clean package -DskipTests=true
