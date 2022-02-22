@@ -26,7 +26,3 @@ jobs:
         with:
           sarif_file: coverity-results.sarif
           
-      - name: Parse Coverity JSON
-        uses: synopsys-sig/coverity-report-output-v7-json@v0.0.0
-        with:
-          json-file-path: coverity-results.json
