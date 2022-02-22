@@ -2,7 +2,7 @@ name: Coverity on PR
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
     
 jobs:
   scan:
