@@ -1,0 +1,32 @@
+name: Coverity
+
+on:
+  workflow_dispatch:
+jobs:
+  scan:
+    runs-on: self-hosted
+    env:
+      COVERITY_TOOL_HOME: '/opt/cov-analysis-linux64-2021.12.0'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Coverity scan
+        run: |
+          ${{ env.COVERITY_TOOL_HOME }}/bin/cov-build --dir emitdir mvn clean package -DskipTests=true
+          ${{ env.COVERITY_TOOL_HOME }}/bin/cov-emit-java --dir emitdir --war target/insecure-bank.war
+          ${{ env.COVERITY_TOOL_HOME }}/bin/cov-analyze --dir emitdir --ticker-mode none --webapp-security --strip-path `pwd`
+          ${{ env.COVERITY_TOOL_HOME }}/bin/cov-format-errors --dir emitdir --json-output-v7 coverity-results.json
+
+      - name: Convert Coverity results to SARIF
+        run: |
+          ${{ env.COVERITY_TOOL_HOME }}/node/bin/node ${{ env.COVERITY_TOOL_HOME }}/SARIF/cov-format-sarif-for-github.js -i coverity-results.json -r gubraun/insecure-bank -c gubraun/insecure-bank `pwd` `git rev-parse HEAD` -o coverity-results.sarif
+          
+      - name: Upload SARIF file to GitHub UI
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: coverity-results.sarif
+          
+      - name: Parse Coverity JSON
+        uses: synopsys-sig/coverity-report-output-v7-json@v0.0.0
+        with:
+          json-file-path: coverity-results.json
