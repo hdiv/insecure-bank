@@ -15,7 +15,7 @@ jobs:
       with:
         java-version: 1.8
     - Build
-      run: mvn -B package --file pom.xml
+        run: mvn -B package --file pom.xml
     - name: Synopsys Detect
       uses: blackducksoftware/github-action@2.0.0
       with:
