@@ -22,5 +22,5 @@ jobs:
     - name: Polaris Scan
       run: |
         curl -fLOsS ${{ secrets.POLARIS_URL }}/api/tools/polaris_cli-linux64.zip
-        unzip -d ~/tmp -jo polaris_cli-linux64.zip
-        ~/tmp/polaris_cli-linux64-2022.3.0/bin/polaris analyze -w
+        unzip -jo polaris_cli-linux64.zip
+        polaris_cli-linux64-2022.3.0/bin/polaris analyze -w
