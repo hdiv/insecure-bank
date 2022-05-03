@@ -23,4 +23,4 @@ jobs:
       run: |
         curl -fLOsS ${{ secrets.POLARIS_URL }}/api/tools/polaris_cli-linux64.zip
         unzip -d /tmp -jo polaris_cli-linux64.zip
-        polaris analyze -w
+        tmp/polaris analyze -w
