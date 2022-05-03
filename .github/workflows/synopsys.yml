@@ -1,26 +1,56 @@
-# Polaris on a self-hosted runner
-name: polaris
+name: "Polaris Scan Action"
 
-on: [push]
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
-  polaris:
+  security:
+    name: security scans
     runs-on: ubuntu-latest
 
-    env:
-      POLARIS_SERVER_URL: ${{ secrets.POLARIS_URL }}
-      POLARIS_ACCESS_TOKEN: ${{ secrets.POLARIS_TOKEN }}
-      PROJECT: ${scm.git.repo}
-      BLDCMD: mvn -B package
-
     steps:
-    - uses: AutoModality/action-clean@v1
-    - uses: actions/checkout@v2
-    - uses: actions/setup-java@v1
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    # If this run was triggered by a pull request event, then checkout
+    # the head of the pull request instead of the merge commit.
+    - run: git checkout HEAD^2
+      if: ${{ github.event_name == 'pull_request' }}
+
+    - name: Static Analysis with Polaris Action
+      uses: devsecops-test/polaris-action@v1
       with:
-        java-version: 11
-    - name: Polaris Scan
-      run: |
-        curl -fLOsS ${{ secrets.POLARIS_URL }}/api/tools/polaris_cli-linux64.zip
-        unzip -jo polaris_cli-linux64.zip
-        polaris_cli-linux64-2022.3.0/bin/polaris analyze -w
+        polarisServerUrl: ${{secrets.POLARIS_SERVER_URL}}
+        polarisAccessToken: ${{secrets.POLARIS_ACCESS_TOKEN}}
+        polarisProjectName: insecure-bank
+    
+    - name: Incremental Static Analysis with Polaris Action for Pull Request
+      if: ${{github.event_name == 'pull_request'}}
+      uses: devsecops-test/polaris-action@v1
+      with:
+        polarisServerUrl: ${{secrets.POLARIS_SERVER_URL}}
+        polarisAccessToken: ${{secrets.POLARIS_ACCESS_TOKEN}}
+        polarisProjectName: insecure-bank
+        polarisAdditionalArgs: --coverity-ignore-capture-failure --incremental polaris-files-to-scan.txt | tee polaris-output.txt
+        githubUrl: https://api.github.com/repos/${{github.repository}}/pulls/$(jq --raw-output .pull_request.number ${{github.event_path}})/files
+        githubCreds: "${{secrets.GITHUB_USERNAME}}:${{secrets.GITHUB_TOKEN}}"     #Needed only if repository is private
+
+    - name: Incremental Static Analysis with Polaris Action for a single commit
+      if: ${{github.event_name == 'push'}}
+      uses: devsecops-test/polaris-action@v1
+      with:
+        polarisServerUrl: ${{secrets.POLARIS_SERVER_URL}}
+        polarisAccessToken: ${{secrets.POLARIS_ACCESS_TOKEN}}
+        polarisProjectName: insecure-bank
+        polarisAdditionalArgs: --coverity-ignore-capture-failure --incremental polaris-files-to-scan.txt | tee polaris-output.txt
+        githubUrl: https://api.github.com/repos/${{github.repository}}/commits/${{github.sha}}
+        githubCreds: "${{secrets.GITHUB_USERNAME}}:${{secrets.GITHUB_TOKEN}}"     #Needed only if repository is private
+
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        # Path to SARIF file relative to the root of the repository
+        sarif_file: polaris-scan-results.sarif.json
