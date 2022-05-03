@@ -1,22 +1,27 @@
-name: Synopsys Black Duck and Polaris Scans
+# Polaris on a self-hosted runner
+name: polaris
 
-on: [push]
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-2016, ubuntu-latest]
+  polaris:
+    runs-on: self-hosted
+
+    env:
+      POLARIS_SERVER_URL: ${{ secrets.POLARIS_URL }}
+      POLARIS_ACCESS_TOKEN: ${{ secrets.POLARIS_TOKEN }}
+      PROJECT: ${scm.git.repo}
+      BLDCMD: mvn -B compile
+
     steps:
-    - uses: actions/checkout@v1
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
+    - uses: AutoModality/action-clean@v1
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v1
       with:
-        java-version: 1.8
-    - name: Build mvn app
-      run: mvn -B package --file pom.xml
-    - name: Synopsys Detect
-      uses: blackducksoftware/github-action@2.0.0
-      with:
-        args: --polaris.url="${{ secrets.POLARIS_URL }}" --polaris.access.token="${{ secrets.POLARIS_TOKEN }}" --detect-tools="POLARIS"
+        java-version: 11
+    - name: Polaris Scan
+      run: |
+        /opt/polaris/bin/polaris analyze -w -- $BLDCMD
