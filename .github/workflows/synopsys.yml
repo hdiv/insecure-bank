@@ -1,10 +1,7 @@
 # Polaris on a self-hosted runner
 name: polaris
 
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+on: [push]
 
 jobs:
   polaris:
@@ -14,7 +11,7 @@ jobs:
       POLARIS_SERVER_URL: ${{ secrets.POLARIS_URL }}
       POLARIS_ACCESS_TOKEN: ${{ secrets.POLARIS_TOKEN }}
       PROJECT: ${scm.git.repo}
-      BLDCMD: mvn -B compile
+      BLDCMD: mvn -B package
 
     steps:
     - uses: AutoModality/action-clean@v1
@@ -24,4 +21,6 @@ jobs:
         java-version: 11
     - name: Polaris Scan
       run: |
-        /opt/polaris/bin/polaris analyze -w -- $BLDCMD
+        curl -fLOsS ${{ secrets.POLARIS_URL }}/api/tools/polaris_cli-linux64.zip
+        unzip -d /tmp -jo polaris_cli-linux64.zip
+        polaris analyze -w
