@@ -8,7 +8,7 @@ on:
 
 jobs:
   polaris:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     env:
       POLARIS_SERVER_URL: ${{ secrets.POLARIS_URL }}
