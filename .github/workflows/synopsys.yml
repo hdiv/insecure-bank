@@ -16,6 +16,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Static Analysis with Polaris Action
+      if: ${{github.event_name == 'push'}}
       uses: devsecops-test/polaris-action@v1
       with:
         polarisServerUrl: ${{secrets.POLARIS_SERVER_URL}}
