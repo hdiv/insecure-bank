@@ -1,0 +1,15 @@
+name: SCA Policy check all commits and all Pull Requests to main
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+...
+    - name: Run Synopsys Detect
+      uses: synopsys-sig/detect-action@v0.3.0
+      with:
+          scan-mode: RAPID # Can be omitted, since this is the default value
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          detect-version: 7.9.0
+          blackduck-url: ${{ secrets.BLACKDUCK_URL }}
+          blackduck-api-token: ${{ secrets.BLACKDUCK_API_TOKEN }}
