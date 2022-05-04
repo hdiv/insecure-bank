@@ -29,7 +29,7 @@ jobs:
         polarisServerUrl: ${{secrets.POLARIS_SERVER_URL}}
         polarisAccessToken: ${{secrets.POLARIS_ACCESS_TOKEN}}
         polarisProjectName: insecure-bank
-        polarisAdditionalArgs: --coverity-ignore-capture-failure --incremental polaris-files-to-scan.txt | tee polaris-output.txt
+        polarisAdditionalArgs: --co project.branch=${GITHUB_HEAD_REF} --coverity-ignore-capture-failure --incremental polaris-files-to-scan.txt | tee polaris-output.txt
         githubUrl: https://api.github.com/repos/${{github.repository}}/pulls/$(jq --raw-output .pull_request.number ${{github.event_path}})/files
         githubCreds: "${{secrets.GITHUB_USERNAME}}:${{secrets.GITHUB_TOKEN}}"     #Needed only if repository is private
 
