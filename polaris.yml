@@ -1,0 +1,16 @@
+version: "1"
+project:
+  name: ${scm.git.repo}
+  branch: ${scm.git.branch}
+  revision:
+    name: ${scm.git.commit}
+    date: ${scm.git.commit.date}
+capture:
+  coverity:
+    buildless:
+      sourceMode:
+        sourceDir: ${project.projectDir}
+install:
+  coverity:
+    version: default
+serverUrl: https://sipse.polaris.synopsys.com
