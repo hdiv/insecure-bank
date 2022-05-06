@@ -1,10 +1,15 @@
 name: SCA Policy check all commits and all Pull Requests to main
 on:
-  pull_request:
-    branches:
-      - main
   push:
-...
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  security:
+    name: security scans
+    runs-on: ubuntu-latest
+    steps:
     - name: Run Synopsys Detect
       uses: synopsys-sig/detect-action@v0.3.0
       with:
