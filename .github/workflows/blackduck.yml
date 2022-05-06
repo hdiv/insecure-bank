@@ -1,4 +1,4 @@
-name: SCA Policy check all commits and all Pull Requests to main
+name: Black Duck Scan
 on:
   push:
     branches: [master]
