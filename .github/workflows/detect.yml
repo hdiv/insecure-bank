@@ -35,6 +35,7 @@ jobs:
         bd_token: ${{ secrets.BLACKDUCK_API_TOKEN }}
         bd_trustcert: true
         upgrade_major: true
+        incremental_results: true
         project: gubraun-insecure-bank
         version: master
       env:
