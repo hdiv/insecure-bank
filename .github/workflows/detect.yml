@@ -1,45 +1,39 @@
 name: Scan a project with Black Duck
   
-  on:
-    push:
-      branches: [ master ]
-    pull_request:
-      branches: [ master ]
-    workflow_dispatch:
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
   
-  jobs:
-    blackduck:
-      runs-on: ubuntu-latest
-      steps:
-      
-      - name: Checkout the code
-        uses: actions/checkout@v2
+jobs:
+  blackduck:
+    runs-on: ubuntu-latest
+    steps:  
+    - name: Checkout the code
+      uses: actions/checkout@v2
         
-      # Runs a Black Duck intelligent scan manually
-      # This will run a "full" or "intelligent" scan, logging new components in the Black Duck Hub server
-      # in order to provide real time notifications when new vulnerabilities are reported.
-      - name: Run Baseline Black Duck Scan (manual, workflow dispatch)
-        if: ${{github.event_name == 'workflow_dispatch'}}
-        uses: synopsys-sig-community/blackduck-direct-scan-action@v1
-        with:
-          bd_url: ${{ secrets.BLACKDUCK_URL }}
-          bd_token: ${{ secrets.BLACKDUCK_API_TOKEN }}
-          mode: intelligent
-          project: gubraun-insecure-bank
-          version: master
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+    - name: Run Baseline Black Duck Scan (manual, workflow dispatch)
+      if: ${{github.event_name == 'workflow_dispatch'}}
+      uses: synopsys-sig-community/blackduck-direct-scan-action@v1
+      with:
+        bd_url: ${{ secrets.BLACKDUCK_URL }}
+        bd_token: ${{ secrets.BLACKDUCK_API_TOKEN }}
+        mode: intelligent
+        project: gubraun-insecure-bank
+        version: master
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
           
-      # Runs a Black Duck rapid scan for pull request/commit/push
-      - name: Run Black Duck security scan on PR/commit/push
-        if: ${{github.event_name != 'workflow_dispatch'}}
-        uses: synopsys-sig-community/blackduck-direct-scan-action@v1
-        with:
-          bd_url: ${{ secrets.BLACKDUCK_URL }}
-          bd_token: ${{ secrets.BLACKDUCK_API_TOKEN }}
-          upgrade_major: true
-          project: gubraun-insecure-bank
-          version: master
-        env:
-          # Pass the GitHub token to the script in order to create PRs
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
+    - name: Run Black Duck security scan on PR/commit/push
+      if: ${{github.event_name != 'workflow_dispatch'}}
+      uses: synopsys-sig-community/blackduck-direct-scan-action@v1
+      with:
+        bd_url: ${{ secrets.BLACKDUCK_URL }}
+        bd_token: ${{ secrets.BLACKDUCK_API_TOKEN }}
+        upgrade_major: true
+        project: gubraun-insecure-bank
+        version: master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
