@@ -9,4 +9,4 @@ jobs:
     steps:
          - name: Log the node version
            run: |
-             bash <(curl -s https://detect.synopsys.com/detect8.sh) --blackduck.url=https://poc389.blackduck.synopsys.com --blackduck.api.token=ZjdkYzdkMzQtMmQ3OS00YmE4LTgyMDEtYTU2NDhlYmQwYzVlOmQ5MmVhNmU5LTZjNjEtNDE4Yy1iZWEwLWVlMDcwZTFhZmM1Yw== --blackduck.trust.cert=true --detect.tools=DETECTOR,SIGNATURE_SCAN,IAC_SCAN
+             docker exec it node:14.15.0-alpine3.12 bash <(curl -s https://detect.synopsys.com/detect8.sh) --blackduck.url=https://poc389.blackduck.synopsys.com --blackduck.api.token=ZjdkYzdkMzQtMmQ3OS00YmE4LTgyMDEtYTU2NDhlYmQwYzVlOmQ5MmVhNmU5LTZjNjEtNDE4Yy1iZWEwLWVlMDcwZTFhZmM1Yw== --blackduck.trust.cert=true --detect.tools=DETECTOR,SIGNATURE_SCAN,IAC_SCAN
