@@ -20,6 +20,7 @@ jobs:
       with:
         bd_url: ${{ secrets.BLACKDUCK_URL }}
         bd_token: ${{ secrets.BLACKDUCK_API_TOKEN }}
+        bd_trustcert: true
         mode: intelligent
         project: gubraun-insecure-bank
         version: master
@@ -32,6 +33,7 @@ jobs:
       with:
         bd_url: ${{ secrets.BLACKDUCK_URL }}
         bd_token: ${{ secrets.BLACKDUCK_API_TOKEN }}
+        bd_trustcert: true
         upgrade_major: true
         project: gubraun-insecure-bank
         version: master
