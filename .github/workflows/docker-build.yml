@@ -1,7 +1,7 @@
 name: container
 on: 
   push:
-   branches: [ main ]
+   branches: [ master ]
 
 jobs:
   node-docker:
