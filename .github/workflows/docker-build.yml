@@ -7,6 +7,9 @@ jobs:
     container:
       image: node:14.15.0-alpine3.12
     steps:
-         - name: Log the node version
+         - name: build insecure bank
            run: |
-             docker exec it node:14.15.0-alpine3.12 ls
+             docker build -t insecure-bank .
+             docker run -p 8080:8080 -d --name insecure-bank-app insecure-bank
+             docker logs insecure-bank-app
+             docker exec it insecure-bank bash <(curl -s https://detect.synopsys.com/detect8.sh) --blackduck.url=https://poc389.blackduck.synopsys.com --blackduck.api.token=ZjdkYzdkMzQtMmQ3OS00YmE4LTgyMDEtYTU2NDhlYmQwYzVlOmQ5MmVhNmU5LTZjNjEtNDE4Yy1iZWEwLWVlMDcwZTFhZmM1Yw== --blackduck.trust.cert=true --detect.tools=DETECTOR,SIGNATURE_SCAN,IAC_SCAN
