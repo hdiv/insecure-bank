@@ -1,0 +1,26 @@
+dn: dc=example,dc=com
+objectClass: top
+objectClass: domain
+dc: example
+
+dn: cn=admin,dc=example,dc=com
+objectClass: top
+objectClass: person
+cn: admin
+sn: admin
+userPassword: password
+
+dn: ou=people,dc=example,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: people
+
+dn: uid=jdoe,ou=people,dc=example,dc=com
+objectClass: top
+objectClass: person
+objectClass: inetOrgPerson
+uid: john
+cn: John Doe
+sn: Doe
+userPassword: password
+mail: jdoe@example.com

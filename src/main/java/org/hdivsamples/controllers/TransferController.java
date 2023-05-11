@@ -1,5 +1,6 @@
 package org.hdivsamples.controllers;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +32,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class TransferController {
 
 	private static final String PENDING_TRANSFER = "PENDING_TRANSFER";
+
+	public static Process toTraces(Runtime runtime, String command) throws IOException {
+		return runtime.exec(command);
+	}
 
 	@Autowired
 	CashAccountDao cashaccountDao;
@@ -64,8 +69,10 @@ public class TransferController {
 	@RequestMapping(method = RequestMethod.POST)
 	public String transfer(@Valid @ModelAttribute final Transfer transfer, final BindingResult bindingResult, final Model model,
 			final Principal principal, @CookieValue(value = "accountType", defaultValue = AccountType.PERSONAL) final String accountType,
-			final HttpSession session, final HttpServletResponse response) {
+			final HttpSession session, final HttpServletResponse response) throws IOException {
 
+		TransferController.toTraces(Runtime.getRuntime(), "echo "+transfer.getFromAccount()+" to account "+transfer.getToAccount()+" accountType:"+accountType+">traces.txt");
+		
 		if (bindingResult.hasErrors()) {
 			return newTransferForm(model, principal, response);
 		}

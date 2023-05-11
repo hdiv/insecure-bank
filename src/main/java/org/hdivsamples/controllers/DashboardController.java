@@ -15,6 +15,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.util.List;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
@@ -154,7 +158,7 @@ public class DashboardController {
 	@RequestMapping(value = "/userDetail/newcertificate", method = RequestMethod.POST)
 	@ResponseBody
 	public String processSimple(@RequestParam(value = "file", required = false) final MultipartFile file, final Model model)
-			throws IOException, ClassNotFoundException, NoSuchAlgorithmException {
+			throws Exception {
 		File tmpFile = File.createTempFile("serial", ".ser");
 		file.transferTo(tmpFile);
 
@@ -214,8 +218,13 @@ public class DashboardController {
 		}
 
 	}
+	
+	private static byte [] getCipher(byte [] data) throws IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+		Cipher cipher = Cipher.getInstance("DES");
+		return cipher.doFinal(data);
+	}
 
-	private static String getFileChecksum(final MessageDigest digest, final File file) throws IOException {
+	private static String getFileChecksum(final MessageDigest digest, final File file) throws Exception {
 		// Get file input stream for reading the file content
 		FileInputStream fis = new FileInputStream(file);
 
@@ -232,7 +241,7 @@ public class DashboardController {
 		fis.close();
 
 		// Get the hash's bytes
-		byte[] bytes = digest.digest();
+		byte[] bytes = getCipher(digest.digest());
 
 		// This bytes[] has bytes in decimal format;
 		// Convert it to hexadecimal format
