@@ -3,7 +3,7 @@ on: [push, pull_request]
 jobs:
   run:
     name: Java ${{ matrix.java }}
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         java: [ 8 ]
