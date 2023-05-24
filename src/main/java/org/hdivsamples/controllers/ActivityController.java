@@ -117,4 +117,12 @@ public class ActivityController {
 		return "accountActivity";
 	}
 
+	public int hasValue(String value){
+		if (value == null){
+			return Integer.parseInt(value);
+		} else {
+			return 0;
+		}
+	}
+
 }
