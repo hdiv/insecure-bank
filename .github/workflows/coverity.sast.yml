@@ -1,0 +1,33 @@
+name: Synopsys Coverity SAST Scanning
+
+on:
+  push:
+    branches: [ master, main ]
+
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Synopsys Action
+        uses: synopsys-sig/synopsys-action@v1.2.0
+        with:
+          coverity_url: ${{ secrets.COVERITY_URL }}
+          coverity_user: ${{ secrets.COVERITY_USER }}
+          coverity_passphrase: ${{ secrets.COVERITY_PASSPHRASE }}
+          # Many customers prefer to set their Coverity project and stream names to match
+          # the GitHub repository name
+          coverity_project_name: ${{ secrets.COVERITY_PROJECT_NAME }}
+          coverity_stream_name: ${{ github.event.repository.name }}
+          # Optionally you may specify the ID number of a saved view to apply as a "break the build" policy.
+          # If any defects are found within this view when applied to the project, the build will be failed
+          # with an exit code.
+          #coverity_policy_view: 100001
+          # Below fields are optional
+          coverity_repository_name: ${{ secrets.COVERITY_REPOSITORY_NAME }}
+          coverity_branch_name: ${{ secrets.COVERITY_BRANCH_NAME }}
