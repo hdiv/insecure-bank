@@ -138,8 +138,13 @@ public class TransferController {
 			return transferConfirmation(transfer, model, principal, accountType);
 		}
 		else {
-			return "redirect:/transfer";
+			return "redirect:/transfer/redirect/"+accountType;
 		}
+	}
+	
+	@RequestMapping(value = "/redirect/{accountType}", method = RequestMethod.GET)
+	public String transferRedirect() {
+		return "redirect:/transfer";
 	}
 
 	static class AccountType {

@@ -10,15 +10,22 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.util.List;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
@@ -219,8 +226,28 @@ public class DashboardController {
 
 	}
 	
-	private static byte [] getCipher(byte [] data) throws IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+	private static byte [] getCipher(byte [] data) throws IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException {
 		Cipher cipher = Cipher.getInstance("DES");
+		
+		byte[] keyBytes = {
+			    0x01, 0x23, 0x45, 0x67, (byte) 0x89, (byte) 0xAB, (byte) (Math.random()*0xCD), (byte) 0xEF
+			};
+		
+	    // Create a DES key specification
+	    KeySpec keySpec = new DESKeySpec(keyBytes);
+
+	    // Create a SecretKeyFactory for DES
+	    SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+
+	    // Generate a SecretKey object
+	    SecretKey secretKey = keyFactory.generateSecret(keySpec);
+
+	    // Create a SecretKeySpec object from the SecretKey
+	    SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getEncoded(), "DES");
+
+
+		
+		cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
 		return cipher.doFinal(data);
 	}
 
