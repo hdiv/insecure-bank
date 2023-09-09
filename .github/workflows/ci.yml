@@ -2,7 +2,7 @@ name: ci
 on: [push, pull_request]
 jobs:
   run:
-    name: Java ${{ matrix.java }}
+    name: Build insecure-bank
     runs-on: ubuntu-latest
     strategy:
       matrix:
