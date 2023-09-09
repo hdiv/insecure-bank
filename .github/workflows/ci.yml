@@ -8,22 +8,6 @@ jobs:
       matrix:
         java: [ 8 ]
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Java
-      uses: actions/setup-java@v1
-      with:
-        java-version: ${{ matrix.java }}
-        java-package: jdk
-        architecture: x64
-    - name: Run tests
-      run: mvn -B package
-
-name: Synopsys Security Testing
-on: [push, pull_request]
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Synopsys Action
@@ -34,3 +18,11 @@ jobs:
           polaris_application_name: "testapp1"
           polaris_project_name: "testproj1"
           polaris_assessment_types: "SCA,SAST"
+      - name: Set up Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+          java-package: jdk
+          architecture: x64
+      - name: Run tests
+        run: mvn -B package
