@@ -9,7 +9,7 @@
 	<name>Insecure Bank</name>
 
 	<properties>
-		<org.springframework-version>4.2.3.RELEASE</org.springframework-version>
+		<org.springframework-version>4.3.30.RELEASE</org.springframework-version>
 		<org.spring-security-version>4.0.3.RELEASE</org.spring-security-version>
 		<org.slf4j-version>1.7.13</org.slf4j-version>
 	</properties>
