@@ -1,0 +1,55 @@
+name: Snippet Analysis
+
+on:
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  analyze-snippets: 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Bearer Token 
+        run: |
+          RESPONSE=$(curl -k -X POST -H "Authorization: token ${{ secrets.BLACK_DUCK_API_TOKEN }}" "https://${{ vars.HOSTNAME }}/api/tokens/authenticate")
+          BEARER_TOKEN=$(echo "${RESPONSE}" | jq -r '.bearerToken')
+          echo "BEARER_TOKEN=${BEARER_TOKEN}" >> $GITHUB_ENV  
+      
+      - name: Checkout code
+        uses: actions/checkout@v3  
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.WORKFLOW_GIT_ACCESS_TOKEN }}
+      
+      - name: Get list of changed files 
+        run: |
+          URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }}/files"
+          FILES=$(curl -s -X GET -G $URL | jq -r '.[] | .filename' | tr '\n' ' ')
+          echo "FILES=${FILES}" >> $GITHUB_ENV
+        
+      - name: Query for snippet matches
+        run: |
+          rm -rf .snippet-licenses
+          mkdir .snippet-licenses
+          FILEPATHS="${{ env.FILES }}"
+          
+          count=1                          
+          for filepath in $FILEPATHS; do       
+            filename=$(echo "$filepath" | tr '/' '_')
+            filename="${filename%.*}-snippet-analysys.json"
+            echo "File path $filepath , file name $filename"
+            RES=$(curl -k --location --request POST "https://${{ vars.HOSTNAME }}/api/snippet-matching" --header "Authorization: Bearer ${BEARER_TOKEN}" --header "Content-Type: text/plain" --data-binary "@$filepath")
+            echo "$RES" | jq '.' > ".snippet-licenses/$filename"
+            if [ $count -eq 10 ]
+            then
+              break
+            fi
+            ((count++))
+          done
+       
+      - name: Commit and push snippet analysis results
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Adding license findings via GitHub Actions"
+          git push
