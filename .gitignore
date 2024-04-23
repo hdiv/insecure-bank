@@ -1,9 +1,13 @@
 .project
 .settings
 .classpath
+.gradle
 target
+build
 build.xml
 /.apt_generated/
 /.apt_generated_tests/
 agent.config
 hdivAgentLog.hlg
+hdiv-ee-agent.jar
+license.hdiv

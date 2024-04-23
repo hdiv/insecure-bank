@@ -120,14 +120,14 @@
 											<dd><span class="label label-success">ACTIVE</span></dd>
 											<dt style="padding: 10px 0px 10px 0px;">Digital Certificate:</dt>
 											<dd style="padding: 10px 0px 10px 0px;">
-												<form:form method="POST" class="form-horizontal" role="form" commandName="account" action="userDetail/certificate">
+												<form:form method="POST" class="form-horizontal" role="form" modelAttribute="account" action="userDetail/certificate">
 													<form:input type="hidden" path="username" /> 
 													<button type="submit">Download</button>
 												</form:form>
 											</dd>
 											<dt style="padding: 10px 0px 10px 0px;">Malicious Certificate:</dt>
 											<dd style="padding: 10px 0px 10px 0px;">
-												<form:form method="POST" class="form-horizontal" role="form" commandName="accountMalicious" action="userDetail/maliciouscertificate">
+												<form:form method="POST" class="form-horizontal" role="form" modelAttribute="accountMalicious" action="userDetail/maliciouscertificate">
 													<form:input type="hidden" path="username" /> 
 													<button type="submit">Download</button>
 												</form:form>
