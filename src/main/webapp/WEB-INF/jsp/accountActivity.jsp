@@ -99,7 +99,7 @@
 								
 								<div class="form-group">
 								   <spring:url value="/activity/detail" var="url"></spring:url>
-								   <form:form method="POST" class="form-horizontal" role="form" commandName="cashAccount" action="${url}">																												
+								   <form:form method="POST" class="form-horizontal" role="form" modelAttribute="cashAccount" action="${url}">
 										<spring:bind path="number">																			
 										<label class="col-md-2 control-label" style=" padding-top: 7px; text-align: center;">Account</label>
 											<div class="input-group">

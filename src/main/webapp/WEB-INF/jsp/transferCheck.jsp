@@ -126,7 +126,7 @@
 										</h3>
 									</div>
 									<div class="widget-content">										
-    									<form:form method="POST" class="form-horizontal" role="form" commandName="operationConfirm" action="transfer/confirm">								
+    									<form:form method="POST" class="form-horizontal" role="form" modelAttribute="operationConfirm" action="transfer/confirm">
 											<spring:bind path="code">											
 											<div class="form-group">
 												<label class="col-md-2 control-label">Code</label>

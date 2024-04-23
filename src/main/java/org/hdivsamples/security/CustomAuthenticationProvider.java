@@ -28,16 +28,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 	@Override
 	public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
 
-		// Editable validation for Spring security Login page.
-		// The login page is not generated using Spring MVC Form tags (it is not possible with Spring Security)
-		// Stop login process and show login page again
-		Object aux = RequestContextHolder.getRequestAttributes().getAttribute("org.hdiv.action.EDITABLE_PARAMETER_ERROR",
-				RequestAttributes.SCOPE_REQUEST);
-
-		if (aux != null) {
-			throw new BadCredentialsException("Bad Credentials");
-		}
-
 		String username = authentication.getName();
 		String password = (String) authentication.getCredentials();
 

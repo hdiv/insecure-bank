@@ -104,7 +104,7 @@
 										</h3>
 									</div>
 									<div class="widget-content">										
-    									<form:form method="POST" class="form-horizontal" role="form" commandName="transfer" action="transfer">								
+    									<form:form method="POST" class="form-horizontal" role="form" modelAttribute="transfer" action="transfer">
 											<spring:bind path="fromAccount">											
 											<div class="form-group">
 												<label class="col-md-2 control-label">From Account</label>

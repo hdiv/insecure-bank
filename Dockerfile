@@ -1,26 +1,27 @@
-FROM gradle:7.3.1-jdk17 AS builder
+FROM gradle:7.3.1-jdk17 AS log4j
 LABEL maintainer="Hdiv Security"
 
 COPY --chown=gradle:gradle ./log4j-cve-2021-44228 /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle :malicious-server:bootJar --no-daemon
 
-FROM openjdk:8u181-jdk-alpine
+FROM gradle:8.7-jdk17 AS app
+LABEL maintainer="Hdiv Security"
+
+COPY --chown=gradle:gradle . /home/gradle/src
+WORKDIR /home/gradle/src
+RUN gradle :bootWar --no-daemon
+
+FROM tomcat:8.5.100-jre8
 
 RUN mkdir /app
-COPY --from=builder /home/gradle/src/malicious-server/build/libs/*.jar /app/malicious-server.jar
-
-RUN mkdir -p /usr/local/tomcat/
+COPY --from=log4j /home/gradle/src/malicious-server/build/libs/*.jar /app/malicious-server.jar
 
 WORKDIR /usr/local/tomcat
-RUN wget --no-check-certificate http://dlcdn.apache.org/tomcat/tomcat-8/v8.5.73/bin/apache-tomcat-8.5.73.tar.gz
-RUN tar xvfz apache*.tar.gz
-RUN mv apache-tomcat-8.5.73/* /usr/local/tomcat/.
-
 ADD start.sh /usr/local/tomcat/
 
 # Copy the application to tomcat
-ADD target/insecure-bank.war /usr/local/tomcat/webapps
+COPY --from=app /home/gradle/src/build/libs/*.war /usr/local/tomcat/webapps/insecure-bank.war
 
 # Copy the license file
 ADD license.hdiv /usr/local/tomcat/hdiv/

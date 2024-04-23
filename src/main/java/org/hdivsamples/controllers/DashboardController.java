@@ -1,39 +1,7 @@
 package org.hdivsamples.controllers;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.security.InvalidKeyException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.Principal;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
-import java.util.List;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESKeySpec;
-import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
-import org.hdivsamples.bean.Account;
-import org.hdivsamples.bean.CashAccount;
-import org.hdivsamples.bean.CreditAccount;
-import org.hdivsamples.bean.FileUntrusted;
-import org.hdivsamples.bean.FileUntrustedValid;
+import org.hdivsamples.bean.*;
 import org.hdivsamples.dao.AccountDao;
 import org.hdivsamples.dao.CashAccountDao;
 import org.hdivsamples.dao.CreditAccountDao;
@@ -48,6 +16,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.annotation.PostConstruct;
+import javax.crypto.*;
+import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URL;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.Principal;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/dashboard")
@@ -66,6 +49,23 @@ public class DashboardController {
 	StorageFacade storageFacade;
 
 	private String checksum;
+	private SecretKey secretKey;
+
+	@PostConstruct
+	public void setup() throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException {
+		byte[] keyBytes = {
+			0x01, 0x23, 0x45, 0x67, (byte) 0x89, (byte) 0xAB, (byte) (Math.random() * 0xCD), (byte) 0xEF
+		};
+
+		// Create a DES key specification
+		KeySpec keySpec = new DESKeySpec(keyBytes);
+
+		// Create a SecretKeyFactory for DES
+		SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+
+		// Generate a SecretKey object
+		secretKey = keyFactory.generateSecret(keySpec);
+	}
 
 	@RequestMapping
 	public String activity(final Model model, final Principal principal) {
@@ -225,33 +225,18 @@ public class DashboardController {
 		}
 
 	}
-	
-	private static byte [] getCipher(byte [] data) throws IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException {
+
+	private byte[] getCipher(byte[] data) throws IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException {
 		Cipher cipher = Cipher.getInstance("DES");
-		
-		byte[] keyBytes = {
-			    0x01, 0x23, 0x45, 0x67, (byte) 0x89, (byte) 0xAB, (byte) (Math.random()*0xCD), (byte) 0xEF
-			};
-		
-	    // Create a DES key specification
-	    KeySpec keySpec = new DESKeySpec(keyBytes);
 
-	    // Create a SecretKeyFactory for DES
-	    SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+		// Create a SecretKeySpec object from the SecretKey
+		SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getEncoded(), "DES");
 
-	    // Generate a SecretKey object
-	    SecretKey secretKey = keyFactory.generateSecret(keySpec);
-
-	    // Create a SecretKeySpec object from the SecretKey
-	    SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getEncoded(), "DES");
-
-
-		
 		cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
 		return cipher.doFinal(data);
 	}
 
-	private static String getFileChecksum(final MessageDigest digest, final File file) throws Exception {
+	private String getFileChecksum(final MessageDigest digest, final File file) throws Exception {
 		// Get file input stream for reading the file content
 		FileInputStream fis = new FileInputStream(file);
 

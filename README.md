@@ -6,12 +6,11 @@
 
         $ git clone https://github.com/hdiv/insecure-bank.git
         
-2. Run the application using an embedded Tomcat:
+2. Run the application locally:
 
-	    $ mvn clean package
-	    $ mvn cargo:run
-	    
-3. You can then access the bank application here: http://localhost:8080/insecure-bank/
+	    $ ./gradlew bootRun
+
+3. You can then access the bank application here: http://localhost:8080/
 
 ## Running with Docker
 
