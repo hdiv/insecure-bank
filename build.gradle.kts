@@ -36,6 +36,8 @@ dependencies {
 	runtimeOnly("javax.servlet:jstl")
 	runtimeOnly("org.apache.tomcat.embed:tomcat-embed-jasper")
 	runtimeOnly("org.hsqldb:hsqldb")
+
+	providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
 }
 
 tasks.withType<Test> {

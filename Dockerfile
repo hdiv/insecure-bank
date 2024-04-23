@@ -12,29 +12,27 @@ COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle :bootWar --no-daemon
 
-FROM openjdk:8u342-jre-slim
+FROM tomcat:8.5.100-jre8
 
-WORKDIR /app
-
+RUN mkdir /app
 COPY --from=log4j /home/gradle/src/malicious-server/build/libs/*.jar /app/malicious-server.jar
-COPY --from=app /home/gradle/src/build/libs/*.war /app/insecure-bank.war
 
-ADD start.sh /app/start.sh
+WORKDIR /usr/local/tomcat
+ADD start.sh /usr/local/tomcat/
 
-RUN chmod +x /app/start.sh
+# Copy the application to tomcat
+COPY --from=app /home/gradle/src/build/libs/*.war /usr/local/tomcat/webapps/insecure-bank.war
 
 # Copy the license file
-ADD license.hdiv /app/hdiv/
+ADD license.hdiv /usr/local/tomcat/hdiv/
 
 # Copy the agent jar
-ADD hdiv-ee-agent.jar /app/hdiv/
-
-ENV JAVA_OPTS="-javaagent:/app/hdiv/hdiv-ee-agent.jar \
-    -Dhdiv.config.dir=/app/hdiv/ \
-    -Dhdiv.console.url=http://console:8080/hdiv-console-services \
-    -Dhdiv.console.token=04db250da579302ca273a958 \
-    -Dhdiv.server.name=Testing-Docker \
-    -Dhdiv.toolbar.enabled=true"
+ADD hdiv-ee-agent.jar /usr/local/tomcat/hdiv/
 
 # Run Tomcat and enjoy!
-CMD /app/start.sh
+CMD export JAVA_OPTS="-javaagent:hdiv/hdiv-ee-agent.jar \
+  -Dhdiv.config.dir=hdiv/ \
+  -Dhdiv.console.url=http://console:8080/hdiv-console-services \
+  -Dhdiv.console.token=04db250da579302ca273a958 \
+  -Dhdiv.server.name=Testing-Docker \
+  -Dhdiv.toolbar.enabled=true" && ./start.sh

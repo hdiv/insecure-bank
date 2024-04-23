@@ -6,7 +6,7 @@
 
         $ git clone https://github.com/hdiv/insecure-bank.git
         
-2. Run the application:
+2. Run the application locally:
 
 	    $ ./gradlew bootRun
 
@@ -22,7 +22,7 @@ Place Hdiv agent and license in the application root folder.
         $ docker run -p 8080:8080 -d --name insecure-bank-app insecure-bank
         $ docker logs insecure-bank-app
 
-Open the application in > http://localhost:8080/
+Open the application in > http://localhost:8080/insecure-bank        
 
 ## Login credentials
 - Username: john
