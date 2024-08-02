@@ -143,7 +143,8 @@ jobs:
           git push || echo "No changes to commit"
 
 
-name: "Upload SARIF"
+#name: "Upload SARIF"
+name: Upload SARIF file
 on:
   push:
     branches:
