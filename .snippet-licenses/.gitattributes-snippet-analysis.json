@@ -1,0 +1,25 @@
+{
+  "logRef": "hub-scan_bB7d1v2Z",
+  "errorMessage": "Code snippet must have between 300 and 50000 non-whitespace characters. Provided code snippet has 108 characters.",
+  "arguments": {
+    "numCharacters": "108",
+    "minCharacters": "300",
+    "maxCharacters": "50000"
+  },
+  "errorCode": "{scan.siggen.snippet.length.out.of.bounds}",
+  "errors": [
+    {
+      "logRef": "hub-scan_bB7d1v2Z",
+      "errorMessage": "Code snippet must have between 300 and 50000 non-whitespace characters. Provided code snippet has 108 characters.",
+      "arguments": {
+        "numCharacters": "108",
+        "minCharacters": "300",
+        "maxCharacters": "50000"
+      },
+      "errorCode": "{scan.siggen.snippet.length.out.of.bounds}",
+      "errors": [],
+      "links": []
+    }
+  ],
+  "links": []
+}
