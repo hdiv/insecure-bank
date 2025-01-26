@@ -18,7 +18,7 @@ COPY --from=builder /home/gradle/src/malicious-server/build/libs/*.jar /app/mali
 RUN mkdir -p /usr/local/tomcat/
 
 WORKDIR /usr/local/tomcat
-RUN wget --no-check-certificate http://dlcdn.apache.org/tomcat/tomcat-8/v8.5.93/bin/apache-tomcat-8.5.93.tar.gz
+RUN wget --no-check-certificate https://apache.root.lu/tomcat/tomcat-8/v8.5.93/bin/apache-tomcat-8.5.93.tar.gz
 RUN tar xvfz apache*.tar.gz
 RUN mv apache-tomcat-8.5.93/* /usr/local/tomcat/.
 
@@ -27,11 +27,11 @@ ADD start.sh /usr/local/tomcat/
 # Copy the application to tomcat
 COPY --from=maven /home/app/target/insecure-bank.war /usr/local/tomcat/webapps/insecure-bank.war
 
-# Copy the license file
-ADD license.hdiv /usr/local/tomcat/hdiv/
+# # Copy the license file
+# ADD license.hdiv /usr/local/tomcat/hdiv/
 
-# Copy the agent jar
-ADD hdiv-ee-agent.jar /usr/local/tomcat/hdiv/
+# # Copy the agent jar
+# ADD hdiv-ee-agent.jar /usr/local/tomcat/hdiv/
 
 # Run Tomcat and enjoy!
 CMD export JAVA_OPTS="-javaagent:hdiv/hdiv-ee-agent.jar \
